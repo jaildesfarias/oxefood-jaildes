@@ -1,6 +1,7 @@
-package br.com.ifpe.oxefood.api.cliente;
+package br.com.ifpe.oxefood.api.produto;
 
-import org.springframework.beans.factory.annotation.Autowired;
+package br.com.ifpe.oxefood.api.entregador;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -13,15 +14,15 @@ import br.com.ifpe.oxefood.modelo.cliente.Cliente;
 import br.com.ifpe.oxefood.modelo.cliente.ClienteService;
 
 @RestController
-@RequestMapping("/api/cliente")//onde 
+@RequestMapping("/api/Entregador")//onde 
 @CrossOrigin
-public class ClienteController {
+public class EntregadorController {
 
    @Autowired
    private ClienteService clienteService;
 
    @PostMapping
-   public ResponseEntity<Cliente> save(@RequestBody ClienteRequest request) {
+   public ResponseEntity<Cliente> save(@RequestBody EntregadorRequest request) {
 
        Cliente cliente = clienteService.save(request.build());
        return new ResponseEntity<Cliente>(cliente, HttpStatus.CREATED);
