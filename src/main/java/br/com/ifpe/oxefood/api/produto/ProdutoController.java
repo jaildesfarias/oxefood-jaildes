@@ -1,7 +1,6 @@
 package br.com.ifpe.oxefood.api.produto;
 
-package br.com.ifpe.oxefood.api.entregador;
-
+import org.springframework.beans.factory.annotation.Autowired; // Import necessário para @Autowired
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -10,22 +9,26 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.ifpe.oxefood.modelo.cliente.Cliente;
-import br.com.ifpe.oxefood.modelo.cliente.ClienteService;
+import br.com.ifpe.oxefood.modelo.produto.Produto; // Importando a classe Produto
+import br.com.ifpe.oxefood.modelo.produto.ProdutoService; // Importando o serviço de Produto
 
-@RestController
-@RequestMapping("/api/Entregador")//onde 
-@CrossOrigin
-public class EntregadorController {
+@RestController // Informa ao Spring que essa classe é um controlador REST (responde com JSON)
+@RequestMapping("/api/produto") // Define o prefixo da rota para esse controlador. 
+// Ou seja, todas as rotas aqui dentro começarão com "/api/produto".
+// Exemplo: POST /api/produto vai cair no método save abaixo.
+   
+@CrossOrigin // Permite que requisições de outros domínios (ex: front-end em localhost:3000) acessem a API
+public class ProdutoController {
 
-   @Autowired
-   private ClienteService clienteService;
+   @Autowired // Injeta automaticamente uma instância de ProdutoService
+   private ProdutoService produtoService;
 
-   @PostMapping
-   public ResponseEntity<Cliente> save(@RequestBody EntregadorRequest request) {
+   @PostMapping // Mapeia requisições HTTP do tipo POST para o método abaixo
+   public ResponseEntity<Produto> save(@RequestBody ProdutoRequest request) {
 
-       Cliente cliente = clienteService.save(request.build());
-       return new ResponseEntity<Cliente>(cliente, HttpStatus.CREATED);
+       
+       Produto produto = produtoService.save(request.build());// Constrói um objeto Produto a partir do ProdutoRequest (que é um DTO)
+
+       return new ResponseEntity<Produto>(produto, HttpStatus.CREATED); // Retorna o objeto produto salvo com status 201 CREATED
    }
 }
-
