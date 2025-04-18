@@ -13,7 +13,7 @@ import br.com.ifpe.oxefood.modelo.cliente.Cliente;
 import br.com.ifpe.oxefood.modelo.cliente.ClienteService;
 
 @RestController
-@RequestMapping("/api/cliente")//onde 
+@RequestMapping("/api/cliente")
 @CrossOrigin
 public class ClienteController {
 
