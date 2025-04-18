@@ -1,0 +1,5 @@
+O controller (EntregadorController) recebe a requisição e chama o service.
+
+O service (EntregadorService) aplica regras e salva via repository.
+
+O repository (EntregadorRepository) acessa diretamente o banco com JPA.
