@@ -29,13 +29,13 @@ public class EntregadorRequest {
    private String foneFixo;
    private Integer qtdEntregasRealizadas;
    private Double valorFrete;
-   private String enderecoRua;
-   private String enderecoCompleto;
-   private String enderecoNumero;
-   private String enderecoBairro;
-   private String enderecoCidade;
-   private String enderecoCep;
-   private String enderecoUp;
+   private String Rua;
+   private String Completo;
+   private String Numero;
+   private String Bairro;
+   private String Cidade;
+   private String Cep;
+   private String Up;
 
    private Boolean ativo;
 
