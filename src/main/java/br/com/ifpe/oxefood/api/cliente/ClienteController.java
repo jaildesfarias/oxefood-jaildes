@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.ifpe.oxefood.modelo.cliente.Cliente;
 import br.com.ifpe.oxefood.modelo.cliente.ClienteService;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/cliente")
@@ -26,5 +27,15 @@ public class ClienteController {
        Cliente cliente = clienteService.save(request.build());
        return new ResponseEntity<Cliente>(cliente, HttpStatus.CREATED);
    }
+   @GetMapping
+    public List<Cliente> listarTodos() {
+        return clienteService.listarTodos();
+    }
+
+    @GetMapping("/{id}")
+    public Cliente obterPorID(@PathVariable Long id) {
+        return clienteService.obterPorID(id);
+    }
+
 }
 
