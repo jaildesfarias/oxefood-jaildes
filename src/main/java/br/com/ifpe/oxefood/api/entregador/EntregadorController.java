@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping; // Mapeia requisiç�
 import org.springframework.web.bind.annotation.RequestBody; // Indica que o parâmetro será mapeado a partir do corpo da requisição
 import org.springframework.web.bind.annotation.RequestMapping; // Define o caminho base da URL da API
 import org.springframework.web.bind.annotation.RestController; // Indica que essa classe é um controlador REST
+import java.util.List;
 
 // Importa as classes do domínio do modelo
 import br.com.ifpe.oxefood.modelo.entregador.Entregador;
