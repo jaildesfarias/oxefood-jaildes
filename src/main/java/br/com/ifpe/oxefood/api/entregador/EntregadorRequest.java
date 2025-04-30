@@ -34,6 +34,7 @@ public class EntregadorRequest {
    private String Numero;
    private String Bairro;
    private String Cidade;
+    private String Estado;
    private String Cep;
    private String Up;
 
@@ -50,13 +51,13 @@ public class EntregadorRequest {
            .foneFixo(foneFixo)
            .qtdEntregasRealizadas(qtdEntregasRealizadas)
            .valorFrete(valorFrete)
-           .enderecoRua(enderecoRua)
-           .enderecoCompleto(enderecoCompleto)
-           .enderecoNumero(enderecoNumero)
-           .enderecoBairro(enderecoBairro)
-           .enderecoCidade(enderecoCidade)
-           .enderecoCep(enderecoCep)
-           .enderecoUp(enderecoUp)
+           .Rua(Rua)
+           .Completo(Completo)
+           .Numero(Numero)
+           .Bairro(Bairro)
+           .Cidade(Cidade)
+           .Cep(Cep)
+           .Uf(Up)
            .ativo(ativo)
            .build();
    }
