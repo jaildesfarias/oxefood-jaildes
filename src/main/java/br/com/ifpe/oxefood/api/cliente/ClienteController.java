@@ -1,5 +1,6 @@
 package br.com.ifpe.oxefood.api.cliente;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.ifpe.oxefood.modelo.cliente.Cliente;
 import br.com.ifpe.oxefood.modelo.cliente.ClienteService;
-import java.util.List;
+import java.util.List;//CONTROLLER, SERVICE
 
 @RestController
 @RequestMapping("/api/cliente")
