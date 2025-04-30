@@ -16,6 +16,17 @@ public class EntregadorService {
         entregador.setQtdEntregasRealizadas(0); // Começa com 0 entregas
         return entregadorRepository.save(entregador);
     }
+    
+    public List<Entregador> listarTodos() {
+  
+        return repository.findAll();
+    }
+
+    public Entregador obterPorID(Long id) {
+
+        return repository.findById(id).get();
+    }
+
 
     // Aqui você pode adicionar métodos como:
     // - buscar por ID
