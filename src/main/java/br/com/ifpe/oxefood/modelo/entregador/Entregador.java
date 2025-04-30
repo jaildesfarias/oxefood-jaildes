@@ -39,12 +39,12 @@ public class Entregador {
     private Boolean ativo;
 
     // Endereço
-    private String enderecoRua;
-    private String enderecoCompleto;
-    private String enderecoNumero;
-    private String enderecoBairro;
-    private String enderecoCidade;
-    private String enderecoCep;
-    private String enderecoUp;
+    private String Rua;
+    private String Completo;
+    private String Numero;
+    private String Bairro;
+    private String Cidade;
+    private String Cep;
+    private String Uf;
 }
 
