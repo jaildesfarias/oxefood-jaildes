@@ -18,6 +18,16 @@ public class ClienteService {
        return repository.save(cliente);
        
    }
+    
+    public List<Cliente> listarTodos() {
+  
+        return repository.findAll();
+    }
+
+    public Cliente obterPorID(Long id) {
+
+        return repository.findById(id).get();
+    }
 
 }
 
