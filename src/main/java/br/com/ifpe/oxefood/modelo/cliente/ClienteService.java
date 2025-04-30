@@ -1,4 +1,5 @@
 package br.com.ifpe.oxefood.modelo.cliente;
+import java.util.List;
 
 import jakarta.transaction.Transactional;
 
