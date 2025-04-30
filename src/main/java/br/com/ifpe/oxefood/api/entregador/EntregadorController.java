@@ -32,4 +32,15 @@ public class EntregadorController {
        // Retorna uma resposta com status 201 CREATED e o objeto Entregador no corpo
        return new ResponseEntity<Entregador>(entregador, HttpStatus.CREATED);
    }
+   //LISTAGEM
+   @GetMapping
+    public List<Entregador> listarTodos() {
+        return entregadorService.listarTodos();
+    }
+
+    @GetMapping("/{id}")
+    public Entregador obterPorID(@PathVariable Long id) {
+        return entregadorService.obterPorID(id);
+    }
+
 }
