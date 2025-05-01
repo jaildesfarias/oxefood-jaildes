@@ -1,46 +1,44 @@
 package br.com.ifpe.oxefood.api.entregador;
 
-// Importa a entidade Entregador do domínio
-import br.com.ifpe.oxefood.modelo.entregador.Entregador;
+import java.time.LocalDate;
 
-// Anotações do Lombok para gerar getters, setters, construtores e o builder
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import br.com.ifpe.oxefood.modelo.entregador.Entregador;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import com.fasterxml.jackson.annotation.JsonFormat; // Define o formato da data no JSON
-import java.time.LocalDate; // Representa datas sem horário
-
-@Data // Lombok: Gera automaticamente getters e setters
-@Builder // Lombok: Habilita o uso do padrão de projeto Builder
-@NoArgsConstructor // Lombok: Gera um construtor sem argumentos
-@AllArgsConstructor // Lombok: Gera um construtor com todos os argumentos
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class EntregadorRequest {
 
-   // Campos básicos do entregador
    private String nome;
    private String cpf;
    private String rg;
-   
-   @JsonFormat(pattern = "dd/MM/yyyy") // Define o formato esperado da data no JSON
+
+   @JsonFormat(pattern = "dd/MM/yyyy")
    private LocalDate dataNascimento;
+
    private String foneCelular;
    private String foneFixo;
    private Integer qtdEntregasRealizadas;
    private Double valorFrete;
-   private String Rua;
-   private String Completo;
-   private String Numero;
-   private String Bairro;
-   private String Cidade;
-    private String Estado;
-   private String Cep;
-   private String Up;
+
+   private String rua;
+   private String complemento;
+   private String numero;
+   private String bairro;
+   private String cidade;
+   private String estado;
+   private String cep;
+   private String uf;
 
    private Boolean ativo;
 
-   // Método que converte o DTO (EntregadorRequest) em uma entidade (Entregador)
    public Entregador build() {
        return Entregador.builder()
            .nome(nome)
@@ -51,14 +49,15 @@ public class EntregadorRequest {
            .foneFixo(foneFixo)
            .qtdEntregasRealizadas(qtdEntregasRealizadas)
            .valorFrete(valorFrete)
-           .Rua(Rua)
-           .Completo(Completo)
-           .Numero(Numero)
-           .Bairro(Bairro)
-           .Cidade(Cidade)
-           .Cep(Cep)
-           .Uf(Up)
+           .rua(rua)
+           .complemento(complemento)
+           .numero(numero)
+           .bairro(bairro)
+           .cidade(cidade)
+           .cep(cep)
+           .uf(uf)
            .ativo(ativo)
            .build();
    }
 }
+

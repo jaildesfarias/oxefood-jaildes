@@ -6,21 +6,20 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity // Define que essa classe será uma tabela no banco de dados
-@Data // Lombok: Gera automaticamente getters, setters, equals, hashCode e toString
-@Builder // Lombok: Habilita o padrão de projeto Builder
-@NoArgsConstructor // Lombok: Construtor sem argumentos
-@AllArgsConstructor // Lombok: Construtor com todos os argumentos
+@Entity
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Entregador {
 
-    @Id // Define a chave primária
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Geração automática do ID pelo banco
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     // Dados pessoais
@@ -38,13 +37,12 @@ public class Entregador {
     private Double valorFrete;
     private Boolean ativo;
 
-    // Endereço
-    private String Rua;
-    private String Completo;
-    private String Numero;
-    private String Bairro;
-    private String Cidade;
-    private String Cep;
-    private String Uf;
+    // Endereço (corrigido para seguir o padrão camelCase)
+    private String rua;
+    private String complemento;
+    private String numero;
+    private String bairro;
+    private String cidade;
+    private String cep;
+    private String uf;
 }
-

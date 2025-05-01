@@ -1,10 +1,10 @@
 package br.com.ifpe.oxefood.modelo.cliente;
 import java.util.List;
 
-import jakarta.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class ClienteService {
@@ -29,6 +29,28 @@ public class ClienteService {
 
         return repository.findById(id).get();
     }
+
+    @Transactional
+   public void update(Long id, Cliente clienteAlterado) {//pego id do cliene que vai sr alterado//
+
+      Cliente cliente = repository.findById(id).get();
+      cliente.setNome(clienteAlterado.getNome());
+      cliente.setDataNascimento(clienteAlterado.getDataNascimento());
+      cliente.setCpf(clienteAlterado.getCpf());
+      cliente.setFoneCelular(clienteAlterado.getFoneCelular());
+      cliente.setFoneFixo(clienteAlterado.getFoneFixo());
+	    
+      repository.save(cliente);//aparte de alteraçao save
+  }
+  @Transactional//MEXE NO BANCO
+   public void delete(Long id) {
+
+       Cliente cliente = repository.findById(id).get();
+       cliente.setHabilitado(Boolean.FALSE);//COLOCA NO TRUE
+
+       repository.save(cliente);
+   
+
 
 }
 

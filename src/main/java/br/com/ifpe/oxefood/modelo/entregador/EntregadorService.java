@@ -1,37 +1,63 @@
 package br.com.ifpe.oxefood.modelo.entregador;
+
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-@Service // Define essa classe como um serviço gerenciado pelo Spring
+import br.com.ifpe.oxefood.modelo.cliente.Cliente;
+
+@Service
 public class EntregadorService {
 
-    @Autowired // Injeta automaticamente o repositório
+    @Autowired
     private EntregadorRepository entregadorRepository;
 
-    // Método para salvar um entregador no banco
     public Entregador save(Entregador entregador) {
-        // Aqui você pode adicionar validações ou regras antes de salvar
-        entregador.setAtivo(true); // Por exemplo, já marcar como ativo por padrão
-        entregador.setQtdEntregasRealizadas(0); // Começa com 0 entregas
+        entregador.setAtivo(true);
+        entregador.setQtdEntregasRealizadas(0);
         return entregadorRepository.save(entregador);
     }
-    
+
     public List<Entregador> listarTodos() {
-  
-        return repository.findAll();
+        return entregadorRepository.findAll();
     }
 
     public Entregador obterPorID(Long id) {
-
-        return repository.findById(id).get();
+        return entregadorRepository.findById(id).orElse(null); // ou lançar uma exceção customizada
     }
 
+    @Transactional
+    public void update(Long id, Entregador entregadorAlterado) {
+ 
+       Entregador entregador = repository.findById(id).get();
+       entregador.setNome(entregadorAlterado.getNome());
+       entregador.setCpf(entregadorAlterado.getCpf());
+       entregador.setDataNascimento(entregadorAlterado.getDataNascimento());
+       entregador.setFoneCelular(entregadorAlterado.getFoneCelular());
+       entregador.setFoneFixo(entregadorAlterado.getFoneFixo());
+  
+  
+    
 
-    // Aqui você pode adicionar métodos como:
-    // - buscar por ID
-    // - listar todos
+      entregador.setQtdEntregasRealizadas( entregadorAlterado.getQtdEntregasRealizadas());
+      entregador.setValorFrete( entregadorAlterado.getValorFrete());
+      entregador.setRua( entregadorAlterado.getRua());
+      entregador.setComplemento(entregadorAlterado.getComplemento());
+      entregador.setNumero(entregadorAlterado.getNumero());
+
+      entregador.setBairro( entregadorAlterado.getBairro());
+      entregador.setCidade( entregadorAlterado.getCidade());
+      entregador.setCep( entregadorAlterado.getCep());
+      entregador.setUf(entregadorAlterado.getUf());
+      entregador.setAtivo(entregadorAlterado.getAtivo());
+	    
+      repository.save(entregador);
+  }
+
+
+    // Possíveis métodos adicionais:
     // - atualizar
     // - deletar
+    // - buscar por filtros, etc.
 }
-
