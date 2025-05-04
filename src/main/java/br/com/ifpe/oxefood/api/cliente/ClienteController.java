@@ -19,22 +19,18 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.ifpe.oxefood.modelo.cliente.Cliente;
 import br.com.ifpe.oxefood.modelo.cliente.ClienteService;
 
-// Define que esta classe é um controlador REST
-@RestController
 
-// Define a URL base para os endpoints deste controller
-@RequestMapping("/api/cliente")
+@RestController// Define que esta classe é um controlador REST
 
-// Permite requisições de origens diferentes (CORS)
-@CrossOrigin
+@RequestMapping("/api/cliente")// Define a URL base para os endpoints deste controller
+
+@CrossOrigin// Permite requisições de origens diferentes (CORS)
 public class ClienteController {
 
-    // Injeta automaticamente uma instância de ClienteService
-    @Autowired
+    @Autowired// Injeta automaticamente uma instância de ClienteService
     private ClienteService clienteService;
 
-    // Endpoint para salvar um novo cliente (POST /api/cliente)
-    @PostMapping
+    @PostMapping// Endpoint para salvar um novo cliente (POST /api/cliente)
     public ResponseEntity<Cliente> save(@RequestBody ClienteRequest request) {
         // Converte o ClienteRequest em Cliente e salva usando o service
         Cliente cliente = clienteService.save(request.build());
