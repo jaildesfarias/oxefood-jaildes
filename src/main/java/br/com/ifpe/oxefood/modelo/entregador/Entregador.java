@@ -46,3 +46,5 @@ public class Entregador {
     private String cep;
     private String uf;
 }
+
+    }
