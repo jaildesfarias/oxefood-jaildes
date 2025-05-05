@@ -48,7 +48,7 @@ public class EntregadorService {
         entregador.setUf(entregadorAlterado.getUf());
         entregador.setAtivo(entregadorAlterado.getAtivo());
 
-        entregadorRepository.save(entregador);
+        entregadorRepository.save(entregador);/ Salva o produto atualizado
     }
 
     @Transactional
