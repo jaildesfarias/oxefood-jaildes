@@ -1,5 +1,6 @@
 package br.com.ifpe.oxefood.modelo.produto;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -10,15 +11,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity // Indica que esta classe é uma entidade JPA (vai virar uma tabela no banco)
-@Data // Lombok: gera getters, setters, equals, hashCode e toString
-@Builder // Lombok: habilita o padrão Builder
-@NoArgsConstructor // Lombok: cria construtor vazio
-@AllArgsConstructor // Lombok: cria construtor com todos os campos
+@Entity
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Produto {
 
-    @Id // Indica o campo que é chave primária
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Gera o ID automaticamente no banco
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String codigo;
@@ -28,6 +29,6 @@ public class Produto {
     private String tempoEntregaMinimo;
     private String tempoEntregaMaximo;
 
-    // Aqui pode adicionar outros campos como: data de validade, ativo, estoque, etc.
+    @Column(nullable = false)
+    private Boolean ativo = true;
 }
-

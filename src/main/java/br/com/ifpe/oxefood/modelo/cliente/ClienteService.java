@@ -40,7 +40,7 @@ public class ClienteService {
       cliente.setFoneCelular(clienteAlterado.getFoneCelular());
       cliente.setFoneFixo(clienteAlterado.getFoneFixo());
 	    
-      repository.save(cliente);//aparte de alteraçao save
+      repository.save(cliente);// / Salva o produto atualizado, aparte de alteraçao save 
   }
   @Transactional//MEXE NO BANCO
    public void delete(Long id) {
@@ -50,7 +50,7 @@ public class ClienteService {
 
        repository.save(cliente);
    
-
+   }
 
 }
 }

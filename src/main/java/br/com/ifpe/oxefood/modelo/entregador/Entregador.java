@@ -40,7 +40,7 @@ public class Entregador {
     // Dados operacionais
     private Integer qtdEntregasRealizadas;
     private Double valorFrete;
-    private Boolean ativo;
+    
 
     // Endereço (corrigido para seguir o padrão camelCase)
     private String rua;
@@ -50,9 +50,15 @@ public class Entregador {
     private String cidade;
     private String cep;
     private String uf;
+<<<<<<< HEAD
     public void setHabilitado(Boolean true1) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'setHabilitado'");
     }
     
+=======
+    private Boolean ativo;
+>>>>>>> 1c3cc6ed70d483072e68ba87dd7c97c5875b2013
 }
+
+    
