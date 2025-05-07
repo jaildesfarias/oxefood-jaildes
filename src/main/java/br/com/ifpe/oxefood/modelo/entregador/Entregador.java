@@ -35,7 +35,7 @@ public class Entregador {
     // Dados operacionais
     private Integer qtdEntregasRealizadas;
     private Double valorFrete;
-    private Boolean ativo;
+    
 
     // Endereço (corrigido para seguir o padrão camelCase)
     private String rua;
@@ -45,6 +45,7 @@ public class Entregador {
     private String cidade;
     private String cep;
     private String uf;
+    private Boolean ativo;
 }
 
-    }
+    

@@ -8,3 +8,4 @@ public interface EntregadorRepository extends JpaRepository<Entregador, Long> {
     // Você pode adicionar métodos customizados aqui se precisar (ex: buscar por nome, CPF etc.)
 }
 
+

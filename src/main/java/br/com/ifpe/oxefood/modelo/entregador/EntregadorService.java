@@ -1,10 +1,15 @@
 package br.com.ifpe.oxefood.modelo.entregador;
 
 import java.util.List;
+import java.util.Optional;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional; // Import necessário
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @Service
 public class EntregadorService {
@@ -57,4 +62,12 @@ public class EntregadorService {
         entregador.setAtivo(Boolean.FALSE);
         entregadorRepository.save(entregador);
     }
+    
+    @GetMapping("/api/entregadores/{id}")
+public ResponseEntity<Entregador> getEntregador(@PathVariable Long id) {
+    Optional<Entregador> entregador = entregadorRepository.findById(id);
+    return entregador.map(ResponseEntity::ok)
+                     .orElse(ResponseEntity.notFound().build());
+}
+
 }

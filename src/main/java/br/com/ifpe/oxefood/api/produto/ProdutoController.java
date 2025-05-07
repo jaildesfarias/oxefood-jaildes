@@ -53,4 +53,10 @@ public class ProdutoController {
         produtoService.delete(id);
         return ResponseEntity.ok().build();
     }
+
+    @PutMapping("/{id}/reativar")
+    public ResponseEntity<Void> reativarProduto(@PathVariable Long id) {
+        produtoService.reativar(id);
+        return ResponseEntity.ok().build();
+    }
 }
