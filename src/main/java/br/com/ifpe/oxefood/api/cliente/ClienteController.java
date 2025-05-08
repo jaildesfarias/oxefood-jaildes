@@ -1,4 +1,3 @@
-// Define o pacote onde esta classe está localizada
 package br.com.ifpe.oxefood.api.cliente;
 
 import java.util.List;
@@ -37,28 +36,24 @@ public class ClienteController {
         // Retorna o cliente salvo com status HTTP 201 (Created)
         return new ResponseEntity<>(cliente, HttpStatus.CREATED);
     }
-
-    // Endpoint para listar todos os clientes (GET /api/cliente)
     @GetMapping
     public List<Cliente> listarTodos() {
-        // Retorna a lista de todos os clientes
         return clienteService.listarTodos();
     }
 
-    // Endpoint para obter um cliente por ID (GET /api/cliente/{id})
     @GetMapping("/{id}")
     public Cliente obterPorID(@PathVariable Long id) {
-        // Retorna o cliente com o ID informado
         return clienteService.obterPorID(id);
     }
+
 
     // Endpoint para atualizar um cliente existente (PUT /api/cliente/{id})
     @PutMapping("/{id}") // O {id} é passado na URL
     public ResponseEntity<Cliente> update(@PathVariable("id") Long id, @RequestBody ClienteRequest request) {
-        // Atualiza o cliente com os dados fornecidos
-        clienteService.update(id, request.build());
-        // Retorna status HTTP 200 (OK) sem corpo
-        return ResponseEntity.ok().build();
+        
+        clienteService.update(id, request.build());// Atualiza o cliente com os dados fornecidos
+  
+        return ResponseEntity.ok().build();      // Retorna status HTTP 200 (OK) sem corpo
     }
 
     // Endpoint para deletar um cliente por ID (DELETE /api/cliente/{id})

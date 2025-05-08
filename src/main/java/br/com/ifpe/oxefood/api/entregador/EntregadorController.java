@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-
 import br.com.ifpe.oxefood.modelo.entregador.Entregador;
 import br.com.ifpe.oxefood.modelo.entregador.EntregadorService;
 
@@ -35,7 +34,7 @@ public class EntregadorController {
         return new ResponseEntity<>(entregador, HttpStatus.CREATED);
     }
 
-    @GetMapping
+     @GetMapping
     public List<Entregador> listarTodos() {
         return entregadorService.listarTodos();
     }
@@ -44,6 +43,7 @@ public class EntregadorController {
     public Entregador obterPorID(@PathVariable Long id) {
         return entregadorService.obterPorID(id);
     }
+
     
  @PutMapping("/{id}")
  public ResponseEntity<Entregador> update(@PathVariable("id") Long id, @RequestBody EntregadorRequest request) {
