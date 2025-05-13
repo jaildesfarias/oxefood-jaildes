@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class EntregadorRequest {
 
+   private Long id;
    private String nome;
    private String cpf;
    private String rg;
@@ -36,11 +37,11 @@ public class EntregadorRequest {
    private String estado;
    private String cep;
    private String uf;
-
    private Boolean ativo;
-
-   public Entregador build() {
+   
+    public Entregador build() {
        return Entregador.builder()
+           .id(id)
            .nome(nome)
            .cpf(cpf)
            .rg(rg)
@@ -60,4 +61,5 @@ public class EntregadorRequest {
            .build();
    }
 }
+
 
