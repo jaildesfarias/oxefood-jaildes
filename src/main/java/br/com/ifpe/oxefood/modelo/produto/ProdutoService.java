@@ -4,9 +4,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 
 @Service
 public class ProdutoService {
@@ -14,7 +13,9 @@ public class ProdutoService {
     @Autowired
     private ProdutoRepository produtoRepository;
 
+    @Transactional
     public Produto save(Produto produto) {
+        produto.setAtivo(Boolean.TRUE); // Ativo por padrão
         return produtoRepository.save(produto);
     }
 
@@ -24,13 +25,13 @@ public class ProdutoService {
 
     public Produto obterPorID(Long id) {
         return produtoRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Produto com ID " + id + " não encontrado."));
+            .orElseThrow(() -> new RuntimeException("Produto com ID " + id + " não encontrado."));
     }
 
     @Transactional
     public void update(Long id, Produto produtoAlterado) {
         Produto produto = produtoRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Produto com ID " + id + " não encontrado."));
+            .orElseThrow(() -> new RuntimeException("Produto com ID " + id + " não encontrado."));
 
         produto.setTitulo(produtoAlterado.getTitulo());
         produto.setCodigo(produtoAlterado.getCodigo());
@@ -45,26 +46,11 @@ public class ProdutoService {
     @Transactional
     public void delete(Long id) {
         Produto produto = produtoRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Produto com ID " + id + " não encontrado."));
-        
-        produto.setAtivo(false); // Marca o produto como inativo (soft delete)
-        produtoRepository.save(produto); // Salva a alteração
-    }
+            .orElseThrow(() -> new RuntimeException("Produto com ID " + id + " não encontrado."));
 
-    @Transactional
-    public void reativar(Long id) {
-        Produto produto = produtoRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Produto com ID " + id + " não encontrado."));
-        
-        produto.setAtivo(true); // Marca o produto como ativo
-        produtoRepository.save(produto); // Salva a alteração
-    }
+        produto.setAtivo(Boolean.FALSE); // Soft delete
+        produtoRepository.save(produto);
 
-    public List<Produto> buscarProdutosPorTitulo(String titulo) {
-        return produtoRepository.findByTituloContaining(titulo);
-    }
-
-    public List<Produto> buscarProdutosHabilitados(Boolean habilitado) {
-        return produtoRepository.findByHabilitado(habilitado);
+          
     }
 }
