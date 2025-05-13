@@ -45,10 +45,8 @@ public class ClienteController {
     public Cliente obterPorID(@PathVariable Long id) {
         return clienteService.obterPorID(id);
     }
-
-
-    // Endpoint para atualizar um cliente existente (PUT /api/cliente/{id})
-    @PutMapping("/{id}") // O {id} é passado na URL
+ 
+    @PutMapping("/{id}") // O {id} é passado na URL O {id} é passado na URLEndpoint para atualizar um cliente existente (PUT /api/cliente/{id})
     public ResponseEntity<Cliente> update(@PathVariable("id") Long id, @RequestBody ClienteRequest request) {
         
         clienteService.update(id, request.build());// Atualiza o cliente com os dados fornecidos
@@ -56,12 +54,10 @@ public class ClienteController {
         return ResponseEntity.ok().build();      // Retorna status HTTP 200 (OK) sem corpo
     }
 
-    // Endpoint para deletar um cliente por ID (DELETE /api/cliente/{id})
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}") // Endpoint para deletar um cliente por ID (DELETE /api/cliente/{id})
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         // Exclui o cliente com o ID fornecido
-        clienteService.delete(id);
-        // Retorna status HTTP 200 (OK) sem corpo
+        clienteService.delete(id); // Retorna status HTTP 200 (OK) sem corpo
         return ResponseEntity.ok().build();
     }
 }
