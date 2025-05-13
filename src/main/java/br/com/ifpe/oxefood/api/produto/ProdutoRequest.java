@@ -1,5 +1,7 @@
 package br.com.ifpe.oxefood.api.produto;
 
+import java.time.LocalDate;
+
 import br.com.ifpe.oxefood.modelo.produto.Produto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder // Lombok: permite construir objetos com .builder()
 @NoArgsConstructor // Lombok: construtor sem argumentos
 @AllArgsConstructor // Lombok: construtor com todos os argumentos
+
 public class ProdutoRequest {
 
     private String codigo;
