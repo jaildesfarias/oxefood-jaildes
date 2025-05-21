@@ -1,4 +1,4 @@
-package br.com.ifpe.oxefood.api.entregador;
+package br.com.ifpe.oxefood.api.Entregador;
 
 import java.time.LocalDate;
 
@@ -14,52 +14,61 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EntregadorRequest {
+public class EntregadorRequest { // vai converter num objeto que tenha os atributos
 
-   private Long id;
-   private String nome;
-   private String cpf;
-   private String rg;
+  private String nome;
 
-   @JsonFormat(pattern = "dd/MM/yyyy")
-   private LocalDate dataNascimento;
+  private String cpf;
 
-   private String foneCelular;
-   private String foneFixo;
-   private Integer qtdEntregasRealizadas;
-   private Double valorFrete;
+  private String rg;
 
-   private String rua;
-   private String complemento;
-   private String numero;
-   private String bairro;
-   private String cidade;
-   private String estado;
-   private String cep;
-   private String uf;
-   private Boolean ativo;
-   
-    public Entregador build() {
-       return Entregador.builder()
-           .id(id)
-           .nome(nome)
-           .cpf(cpf)
-           .rg(rg)
-           .dataNascimento(dataNascimento)
-           .foneCelular(foneCelular)
-           .foneFixo(foneFixo)
-           .qtdEntregasRealizadas(qtdEntregasRealizadas)
-           .valorFrete(valorFrete)
-           .rua(rua)
-           .complemento(complemento)
-           .numero(numero)
-           .bairro(bairro)
-           .cidade(cidade)
-           .cep(cep)
-           .uf(uf)
-           .ativo(ativo)
-           .build();
-   }
+  @JsonFormat(pattern = "dd/MM/yyyy")
+  private LocalDate dataNascimento;
+
+  private String foneCelular;
+
+  private String foneFixo;
+
+  private Integer qtdEntregasRealizadas;
+
+  private Double valorFrete;
+
+  private String enderecoRua;
+
+  private String enderecoComplemento;
+
+  private String enderecoNumero;
+
+  private String enderecoBairro;
+
+  private String enderecoCidade;
+
+  private String enderecoCep;
+
+  private String enderecoUf;
+
+  private Boolean ativo;
+
+  public Entregador build() {
+
+    return Entregador.builder()
+        .nome(nome)
+        .dataNascimento(dataNascimento)
+        .cpf(cpf)
+        .rg(rg)
+        .foneCelular(foneCelular)
+        .foneFixo(foneFixo)
+        .qtdEntregasRealizadas(qtdEntregasRealizadas)
+        .valorFrete(valorFrete)
+        .enderecoRua(enderecoRua)
+        .enderecoComplemento(enderecoComplemento)
+        .enderecoNumero(enderecoNumero)
+        .enderecoBairro(enderecoBairro)
+        .enderecoCidade(enderecoCidade)
+        .enderecoCep(enderecoCep)
+        .enderecoUf(enderecoUf)
+        .ativo(ativo)
+        .build();
+  }
+
 }
-
-

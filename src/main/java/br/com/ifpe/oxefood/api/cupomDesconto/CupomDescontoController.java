@@ -1,4 +1,4 @@
-package br.com.ifpe.oxefood.api.cliente;
+package br.com.ifpe.oxefood.api.cupomDesconto;
 
 import java.util.List;
 
@@ -15,46 +15,48 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.ifpe.oxefood.modelo.cliente.Cliente;
-import br.com.ifpe.oxefood.modelo.cliente.ClienteService;
+import br.com.ifpe.oxefood.modelo.cupom.CupomDesconto;
+import br.com.ifpe.oxefood.modelo.cupom.CupomDescontoService;
 
 @RestController
-@RequestMapping("/api/cliente") // mapeamento por rotas
+@RequestMapping("/api/cupom") // mapeamento por rotas
 @CrossOrigin
 
-public class ClienteController {
+public class CupomDescontoController {
+
   @Autowired
-  private ClienteService clienteService;
+
+  private CupomDescontoService cupomService;
 
   // função salvar
   @PostMapping
-  public ResponseEntity<Cliente> save(@RequestBody ClienteRequest request) {
+  public ResponseEntity<CupomDesconto> save(@RequestBody CupomDescontoRequest request) {
 
-    Cliente cliente = clienteService.save(request.build());
-    return new ResponseEntity<Cliente>(cliente, HttpStatus.CREATED);
+    CupomDesconto cupomDesconto = cupomService.save(request.build());
+    return new ResponseEntity<CupomDesconto>(cupomDesconto, HttpStatus.CREATED);
   }
 
   @GetMapping
-  public List<Cliente> listarTodos() {
-    return clienteService.listarTodos();
+  public List<CupomDesconto> listarTodos() {
+    return cupomService.listarTodos();
   }
 
   @GetMapping("/{id}")
-  public Cliente obterPorID(@PathVariable Long id) {
-    return clienteService.obterPorID(id);
+  public CupomDesconto obterPorID(@PathVariable Long id) {
+    return cupomService.obterPorID(id);
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<Cliente> update(@PathVariable("id") Long id, @RequestBody ClienteRequest request) {
+  public ResponseEntity<CupomDesconto> update(@PathVariable("id") Long id, @RequestBody CupomDescontoRequest request) {
 
-    clienteService.update(id, request.build());
+    cupomService.update(id, request.build());
     return ResponseEntity.ok().build();
   }
 
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> delete(@PathVariable Long id) {
 
-    clienteService.delete(id);
+    cupomService.delete(id);
     return ResponseEntity.ok().build();
   }
 

@@ -1,8 +1,9 @@
-package br.com.ifpe.oxefood.modelo.cliente;
+package br.com.ifpe.oxefood.modelo.cupom;
 
 import java.time.LocalDate;
 
 import org.hibernate.annotations.SQLRestriction;
+
 import br.com.ifpe.oxefood.util.entity.EntidadeAuditavel;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,7 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity // transforma numa classe exisitivel no jpa
-@Table(name = "Cliente") // especifica que a classe sera convertida em tabela
+@Table(name = "Cupom_De_Desconto") // especifica que a classe sera convertida em tabela
 @SQLRestriction("habilitado = true") // acresenta em todas as consultas uma clausula where: where habilidado = true
 
 @Builder // forma de instanciar objetos da classe
@@ -23,21 +24,27 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class Cliente extends EntidadeAuditavel {
+public class CupomDesconto extends EntidadeAuditavel {
 
   @Column
-  private String nome;
+  private String codigoDesconto;
 
   @Column
-  private LocalDate dataNascimento;
+  private Double percentualDesconto;
 
   @Column
-  private String cpf;
+  private Double valorDesconto;
 
   @Column
-  private String foneCelular;
+  private Double valorMinimoPermitido;
 
   @Column
-  private String foneFixo;
+  private Integer quantidadeMaximaUso;
+
+  @Column
+  private LocalDate inicioVigencia;
+
+  @Column
+  private LocalDate fimVigencia;
 
 }
