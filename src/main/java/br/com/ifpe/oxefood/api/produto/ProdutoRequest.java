@@ -1,6 +1,7 @@
 package br.com.ifpe.oxefood.api.produto;
 
 import br.com.ifpe.oxefood.modelo.Produto.Produto;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,6 +12,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProdutoRequest { // vai converter num objeto que tenha os atributos
+   @ManyToOne
+   private CategoriaProduto categoria;
+
+private Long idCategoria; 
 
   private String codigo;
 
