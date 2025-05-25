@@ -8,14 +8,19 @@ import br.com.ifpe.oxefood.modelo.entregador.Entregador;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class EntregadorRequest {
 
+   private Long id;
    private String nome;
    private String cpf;
    private String rg;
@@ -36,11 +41,11 @@ public class EntregadorRequest {
    private String estado;
    private String cep;
    private String uf;
-
    private Boolean ativo;
-
-   public Entregador build() {
+   
+    public Entregador build() {
        return Entregador.builder()
+           .id(id)
            .nome(nome)
            .cpf(cpf)
            .rg(rg)
@@ -60,4 +65,5 @@ public class EntregadorRequest {
            .build();
    }
 }
+
 
