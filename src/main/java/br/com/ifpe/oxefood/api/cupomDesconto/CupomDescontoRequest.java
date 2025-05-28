@@ -7,42 +7,46 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import br.com.ifpe.oxefood.modelo.cupom.CupomDesconto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
 @Builder
-@NoArgsConstructor
+@Getter
+@Setter
 @AllArgsConstructor
-public class CupomDescontoRequest { // vai converter num objeto que tenha os atributos
+@NoArgsConstructor
+public class CupomDescontoRequest {
 
-  private String codigoDesconto;
 
-  private Double percentualDesconto;
+   private String codigoDesconto;
 
-  private Double valorDesconto;
+   private Double percentualDesconto;
 
-  private Double valorMinimoPermitido;
+   private Double valorDesconto;
 
-  private Integer quantidadeMaximaUso;
+   private Double valorMinimoPedidoPermitido;
+   
+   private int quantidadeMaximaUso;
+   
+   @JsonFormat(pattern = "dd/MM/yyyy") //Ele vai esperar a anotação em Dia/Mês/Ano
+   private LocalDate inicioVigencia;
 
-  @JsonFormat(pattern = "dd/MM/yyyy")
-  private LocalDate inicioVigencia;
+   @JsonFormat(pattern = "dd/MM/yyyy") //Ele vai esperar a anotação em Dia/Mês/Ano
+   private LocalDate fimVigencia;
 
-  @JsonFormat(pattern = "dd/MM/yyyy")
-  private LocalDate fimVigencia;
 
-  public CupomDesconto build() {
+   public CupomDesconto build() {
 
-    return CupomDesconto.builder()
-        .codigoDesconto(codigoDesconto)
-        .percentualDesconto(percentualDesconto)
-        .valorDesconto(valorDesconto)
-        .valorMinimoPermitido(valorMinimoPermitido)
-        .quantidadeMaximaUso(quantidadeMaximaUso)
-        .inicioVigencia(inicioVigencia)
-        .fimVigencia(fimVigencia)
-        .build();
-  }
+       return CupomDesconto.builder() 
+           .codigoDesconto(codigoDesconto)
+           .percentualDesconto(percentualDesconto)
+           .codigoDesconto(codigoDesconto)
+           .valorDesconto(valorDesconto)
+           .quantidadeMaximaUso(quantidadeMaximaUso)
+           .inicioVigencia(inicioVigencia)
+           .fimVigencia(fimVigencia)
+           .build();
+   }
 
 }

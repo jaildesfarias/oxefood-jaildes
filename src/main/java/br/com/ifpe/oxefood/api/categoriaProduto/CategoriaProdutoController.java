@@ -5,54 +5,59 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import br.com.ifpe.oxefood.modelo.categoriaProduto.CategoriaProduto;
 import br.com.ifpe.oxefood.modelo.categoriaProduto.CategoriaProdutoService;
-import jakarta.validation.Valid;
 
 
-@RestController
-@RequestMapping("/api/categoriaProduto")
-@CrossOrigin
-@Tag(name = "API Categoria Produto", description = "API responsável pelos serviços de categoria de produto no sistema")
+
+@RestController //Faz a classe ser um controller
+@RequestMapping("/api/categoriaproduto")
+@CrossOrigin //Utilizada para o controller receber requisições do React
+
 public class CategoriaProdutoController {
+    
+          @Autowired //Instanciar no cliente service
+   private CategoriaProdutoService categoriaprodutoService;
 
-    @Autowired
-    private CategoriaProdutoService categoriaProdutoService;
+   @PostMapping //Especificar que essa função vai receber requisições do tipo Post
+   public ResponseEntity<CategoriaProduto> save(@RequestBody CategoriaProdutoRequest request) {
 
-   
-    @PostMapping
-    public ResponseEntity<CategoriaProduto> save(@RequestBody @Valid CategoriaProdutoRequest request) {
-        CategoriaProduto categoriaProduto = categoriaProdutoService.save(request.build());
-        return ResponseEntity.status(HttpStatus.CREATED).body(categoriaProduto);
+       CategoriaProduto categoriaproduto = categoriaprodutoService.save(request.build());
+       return new ResponseEntity<CategoriaProduto>(categoriaproduto, HttpStatus.CREATED);
+   }
+
+   @GetMapping
+    public List<CategoriaProduto> listarTodos() {
+        return categoriaprodutoService.listarTodos();
     }
-)
-    @GetMapping
-    public ResponseEntity<List<CategoriaProduto>> listarTodos() {
-        List<CategoriaProduto> categorias = categoriaProdutoService.listarTodos();
-        return ResponseEntity.ok(categorias);
-    }
-")
+
     @GetMapping("/{id}")
-    public ResponseEntity<CategoriaProduto> obterPorID(@PathVariable Long id) {
-        CategoriaProduto categoria = categoriaProdutoService.obterPorID(id);
-        if (categoria == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(categoria);
+    public CategoriaProduto obterPorID(@PathVariable Long id) {
+        return categoriaprodutoService.obterPorID(id);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<CategoriaProduto> update(@PathVariable Long id,
-                                                   @RequestBody @Valid CategoriaProdutoRequest request) {
-        CategoriaProduto categoriaAtualizada = categoriaProdutoService.update(id, request.build());
-        return ResponseEntity.ok(categoriaAtualizada);
-    }
+    @PutMapping("/{id}") 
+    public ResponseEntity<CategoriaProduto> update(@PathVariable("id") Long id, @RequestBody CategoriaProdutoRequest request) { //Recebe o id e os dados do cliente
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        categoriaProdutoService.delete(id);
-        return ResponseEntity.noContent().build();
-    }
+       categoriaprodutoService.update(id, request.build()); //Objeto preenchido sera enviado para o service
+       return ResponseEntity.ok().build();
+ }
+
+   @DeleteMapping("/{id}") // passar o id do cliente que eu quero remover
+   public ResponseEntity<Void> delete(@PathVariable Long id) { //repassar o id para a função delete
+
+       categoriaprodutoService.delete(id);
+       return ResponseEntity.ok().build();
+   }
+
 }

@@ -1,9 +1,7 @@
+package br.com.ifpe.oxefood.modelo.categoriaProduto;
 
-package br.com.ifpe.oxefood.modelo.produto;
-
-import java.time.LocalDate;
-import java.util.List;
 import org.hibernate.annotations.SQLRestriction;
+
 import br.com.ifpe.oxefood.util.entity.EntidadeAuditavel;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,34 +13,18 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
-@Entity
-@Table(name ="CategoriaProduto")
-@SQLRestriction("habilidado = true")
 
-@Builder 
+@Entity
+@Table(name = "CategoriaProduto")
+@SQLRestriction("habilitado = true") // acrescenta em todas as consultas uma clausula where: habilitado = true
+@Builder
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class CategoriaProduto extends EntidadeAuditavel {
- 
 
-  @Column
-  private String codigo;
+   @Column
+   private String descricao;
 
-  @Column
-  private String titulo;
-
-  @Column
-  private String descricao;
-
-  @Column
-  private Double valorUnitario;
-
-  @Column
-  private Integer tempoEntregaMinimo;
-
-  @Column
-  private Integer tempoEntregaMaximo;
 }
