@@ -1,4 +1,4 @@
-package br.com.ifpe.oxefood.api.entregador;
+package br.com.ifpe.oxefood.api.cupomDesconto;
 
 import java.util.List;
 
@@ -15,46 +15,48 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.ifpe.oxefood.modelo.entregador.Entregador;
-import br.com.ifpe.oxefood.modelo.entregador.EntregadorService;
+import br.com.ifpe.oxefood.modelo.cupom.CupomDesconto;
+import br.com.ifpe.oxefood.modelo.cupom.CupomDescontoService;
 
 @RestController
-@RequestMapping("/api/entregador") // mapeamento por rotas
+@RequestMapping("/api/cupom") // mapeamento por rotas
 @CrossOrigin
 
-public class EntregadorController {
-  
+public class CupomDescontoController {
+
   @Autowired
-  private EntregadorService entregadorService;
 
+  private CupomDescontoService cupomService;
+
+  // função salvar
   @PostMapping
-  public ResponseEntity<Entregador> save(@RequestBody EntregadorRequest request) {
+  public ResponseEntity<CupomDesconto> save(@RequestBody CupomDescontoRequest request) {
 
-    Entregador entregador = entregadorService.save(request.build());
-    return new ResponseEntity<Entregador>(entregador, HttpStatus.CREATED);
+    CupomDesconto cupomDesconto = cupomService.save(request.build());
+    return new ResponseEntity<CupomDesconto>(cupomDesconto, HttpStatus.CREATED);
   }
 
   @GetMapping
-  public List<Entregador> listarTodos() {
-    return entregadorService.listarTodos();
+  public List<CupomDesconto> listarTodos() {
+    return cupomService.listarTodos();
   }
 
   @GetMapping("/{id}")
-  public Entregador obterPorID(@PathVariable Long id) {
-    return entregadorService.obterPorID(id);
+  public CupomDesconto obterPorID(@PathVariable Long id) {
+    return cupomService.obterPorID(id);
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<Entregador> update(@PathVariable("id") Long id, @RequestBody EntregadorRequest request) {
+  public ResponseEntity<CupomDesconto> update(@PathVariable("id") Long id, @RequestBody CupomDescontoRequest request) {
 
-    entregadorService.update(id, request.build());
+    cupomService.update(id, request.build());
     return ResponseEntity.ok().build();
   }
 
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> delete(@PathVariable Long id) {
 
-    entregadorService.delete(id);
+    cupomService.delete(id);
     return ResponseEntity.ok().build();
   }
 
