@@ -1,4 +1,4 @@
-package br.com.ifpe.oxefood.api.cupomdesconto;
+package br.com.ifpe.oxefood.api.cupomDesconto;
 
 import java.util.List;
 
@@ -15,9 +15,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.ifpe.oxefood.modelo.cupomdesconto.CupomDesconto;
-import br.com.ifpe.oxefood.modelo.cupomdesconto.CupomDescontoService;
+import br.com.ifpe.oxefood.modelo.cupomDesconto.CupomDesconto;
+import br.com.ifpe.oxefood.modelo.cupomDesconto.CupomDescontoService;
 
+import jakarta.validation.Valid;
 @RestController 
 @RequestMapping("/api/cupomDesconto")
 @CrossOrigin
