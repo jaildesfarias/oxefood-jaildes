@@ -1,6 +1,5 @@
 package br.com.ifpe.oxefood.modelo.cliente;
 
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +42,6 @@ public class ClienteService {
 	    
       repository.save(cliente);
   }
-
 
   @Transactional
   public void delete(Long id) {

@@ -1,4 +1,4 @@
-package br.com.ifpe.oxefood.modelo.cupom;
+package br.com.ifpe.oxefood.modelo.cupomDesconto;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

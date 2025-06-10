@@ -14,10 +14,10 @@ public class CategoriaProdutoService {
     private CategoriaProdutoRepository repository;
 
    @Transactional
-   public CategoriaProduto save(CategoriaProduto categoriaproduto) { 
+   public CategoriaProduto save(CategoriaProduto categoriaProduto) { 
 
-       categoriaproduto.setHabilitado(Boolean.TRUE);
-       return repository.save(categoriaproduto);
+       categoriaProduto.setHabilitado(Boolean.TRUE);
+       return repository.save(categoriaProduto);
        
       
    }
@@ -35,20 +35,20 @@ public CategoriaProduto obterPorID(Long id) {
 @Transactional
 public void update(Long id, CategoriaProduto categoriaprodutoAlterado) {
 
-   CategoriaProduto categoriaproduto = repository.findById(id).get(); //Consultar no banco o CategoriaProduto
-   categoriaproduto.setDescricao(categoriaprodutoAlterado.getDescricao());
+   CategoriaProduto categoriaProduto = repository.findById(id).get(); //Consultar no banco o CategoriaProduto
+   categoriaProduto.setDescricao(categoriaProdutoAlterado.getDescricao());
  
      
-   repository.save(categoriaproduto); //Função para cadastra e alterar objeto
+   repository.save(categoriaProduto); //Função para cadastra e alterar objeto
 }
 
 @Transactional //Toda vez que for mexer no banco utilizar o transactional
 public void delete(Long id) {
 
-    CategoriaProduto categoriaproduto = repository.findById(id).get();
-    categoriaproduto.setHabilitado(Boolean.FALSE);
+    CategoriaProduto categoriaProduto = repository.findById(id).get();
+    categoriaProduto.setHabilitado(Boolean.FALSE);
 
-    repository.save(categoriaproduto); //Na verdade está sendo alterado se realmente fosse deletado em vez de save seria o delete
+    repository.save(categoriaProduto); //Na verdade está sendo alterado se realmente fosse deletado em vez de save seria o delete
 }
 
 

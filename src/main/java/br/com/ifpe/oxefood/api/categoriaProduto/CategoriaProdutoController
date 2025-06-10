@@ -1,5 +1,4 @@
-
-package br.com.ifpe.oxefood.api.categoriaproduto;
+package br.com.ifpe.oxefood.api.categoriaProduto;
 
 import java.util.List;
 
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.ifpe.oxefood.modelo.categoriaProduto.CategoriaProduto;
-import br.com.ifpe.oxefood.modelo.categoriaProduto.CategoriaProdutoService;
+import br.com.ifpe.oxefood.modelo.categoriaproduto.CategoriaProdutoService;
 import jakarta.validation.Valid;
 
 @RestController 
