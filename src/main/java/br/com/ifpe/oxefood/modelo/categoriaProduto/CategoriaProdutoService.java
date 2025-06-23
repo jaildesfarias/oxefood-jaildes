@@ -33,7 +33,7 @@ public CategoriaProduto obterPorID(Long id) {
 }
 
 @Transactional
-public void update(Long id, CategoriaProduto categoriaprodutoAlterado) {
+public void update(Long id, CategoriaProduto categoriaProdutoAlterado) {
 
    CategoriaProduto categoriaProduto = repository.findById(id).get(); //Consultar no banco o CategoriaProduto
    categoriaProduto.setDescricao(categoriaProdutoAlterado.getDescricao());
