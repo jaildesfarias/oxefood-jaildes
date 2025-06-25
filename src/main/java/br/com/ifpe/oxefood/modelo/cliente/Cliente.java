@@ -1,11 +1,20 @@
 package br.com.ifpe.oxefood.modelo.cliente;
 
 import java.time.LocalDate;
+import java.util.List;
 
+import org.hibernate.FetchMode;
+import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.SQLRestriction;
+
+import br.com.ifpe.oxefood.modelo.enderecoCliente.EnderecoCliente;
 import br.com.ifpe.oxefood.util.entity.EntidadeAuditavel;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,13 +34,21 @@ import lombok.Setter;
 
 public class Cliente extends EntidadeAuditavel {
 
-  @Column
-  private String nome;
+ OneToOne
+   @JoinColumn(nullable = false)
+   private Usuario usuario;
+
+   @OneToMany(mappedBy = "cliente", orphanRemoval = true, fetch = FetchType.EAGER)
+   @Fetch(FetchMode.SUBSELECT)
+   private List<EnderecoCliente> enderecos;
+
+  @Column(nullable = false, length = 100)
+   private String nome;
 
   @Column
   private LocalDate dataNascimento;
 
-  @Column
+  @Column(unique = true)
   private String cpf;
 
   @Column
@@ -41,3 +58,4 @@ public class Cliente extends EntidadeAuditavel {
   private String foneFixo;
 
 }
+

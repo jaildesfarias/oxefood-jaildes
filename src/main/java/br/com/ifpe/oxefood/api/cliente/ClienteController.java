@@ -21,9 +21,12 @@ import br.com.ifpe.oxefood.modelo.cliente.ClienteService;
 
 import jakarta.validation.Valid;
 
+
+@CrossOrigin(origins = "http://localhost:3001")//Utilizada para o controller receber requisições do React
+
 @RestController //Faz a classe ser um controller
 @RequestMapping("/api/cliente")
-@CrossOrigin //Utilizada para o controller receber requisições do React
+
 
 public class ClienteController {
       @Autowired //Instanciar no cliente service
