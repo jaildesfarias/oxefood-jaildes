@@ -1,10 +1,9 @@
-package br.com.ifpe.oxefood.modelo.enderecoCliente;
+package br.com.ifpe.oxefood.modelo.cliente;
 
 import org.hibernate.annotations.SQLRestriction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import br.com.ifpe.oxefood.modelo.cliente.Cliente;
 import br.com.ifpe.oxefood.util.entity.EntidadeAuditavel;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,9 +25,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class EnderecoCliente extends EntidadeAuditavel {
     
-    @JsonIgnore //Se não colocar ele iria ficar carregando 
+    @JsonIgnore  
     @ManyToOne
     private Cliente cliente;
+     
+    private static final long serialVersionUID = 1L;
 
     @Column
     private String rua;

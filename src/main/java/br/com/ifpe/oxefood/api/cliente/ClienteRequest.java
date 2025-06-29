@@ -39,13 +39,6 @@ public class ClienteRequest {
            .build();
    }
 
-    @NotBlank(message = "O e-mail é de preenchimento obrigatório")
-    @Email
-    private String email;
-
-    @NotBlank(message = "A senha é de preenchimento obrigatório")
-    private String password;
-
     private String nome;
 
     @JsonFormat(pattern = "dd/MM/yyyy") // Ele vai esperar a anotação em Dia/Mês/Ano
@@ -58,14 +51,6 @@ public class ClienteRequest {
     private String foneCelular;
 
     private String foneFixo;
-
-    public Usuario buildUsuario() {
-        return Usuario.builder()
-                .username(email)
-                .password(password)
-                .roles(Arrays.asList(new Perfil(Perfil.ROLE_CLIENTE)))
-                .build();
-    }
 
     public Cliente build() {
 

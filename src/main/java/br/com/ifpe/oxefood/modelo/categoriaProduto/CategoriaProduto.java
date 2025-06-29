@@ -1,9 +1,6 @@
 package br.com.ifpe.oxefood.modelo.categoriaProduto;
 
-import org.hibernate.annotations.SQLRestriction;
-
-import br.com.ifpe.oxefood.util.entity.EntidadeAuditavel;
-import jakarta.persistence.Column;
+import br.com.ifpe.oxefood.util.entity.EntidadeNegocio;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -14,15 +11,16 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "CategoriaProduto")
-@SQLRestriction("habilitado = true") // acrescenta em todas as consultas uma clausula where: habilitado = true
-@Builder
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class CategoriaProduto extends EntidadeAuditavel {
+@AllArgsConstructor
+@Builder
+public class CategoriaProduto extends EntidadeNegocio {
 
-   @Column
-   private String descricao;
+    private static final long serialVersionUID = 1L;
 
+    private String nome;
+
+    private String descricao;
 }

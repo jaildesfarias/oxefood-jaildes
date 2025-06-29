@@ -32,9 +32,12 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Usuario extends EntidadeNegocio implements UserDetails {
 
+   private static final long serialVersionUID = 1L;  // <-- adicionado para o aviso desaparecer
+
    @Column(nullable = false, unique = true)
    private String username;
-@JsonIgnore
+
+   @JsonIgnore
    @Column(nullable = false)
    private String password;
 
@@ -53,6 +56,7 @@ public class Usuario extends EntidadeNegocio implements UserDetails {
        return username;
    }
 
+   @Override
    public String getPassword() {
        return password;
    }
