@@ -1,4 +1,4 @@
-package br.com.ifpe.oxefood.modelo.acesso;
+package br.com.ifpe.oxefood.modelo.;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -53,5 +54,24 @@ public class UsuarioService implements UserDetailsService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setHabilitado(Boolean.TRUE);
         return repository.save(user);
+          @Autowired
+    private JwtService jwtService;
+
     }
+      public Usuario obterUsuarioLogado(HttpServletRequest request) {
+
+        Usuario usuarioLogado = null;
+        String authHeader = request.getHeader("Authorization");
+
+        if (authHeader != null) {
+
+            String jwt = authHeader.substring(7);
+            String userEmail = jwtService.extractUsername(jwt);
+            usuarioLogado = findByUsername(userEmail);
+            return usuarioLogado;
+        }
+
+        return usuarioLogado;
+    }
+
 }

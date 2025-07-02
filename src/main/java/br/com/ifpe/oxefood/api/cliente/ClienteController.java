@@ -16,9 +16,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.ifpe.oxefood.modelo.UsuarioService;
 import br.com.ifpe.oxefood.modelo.cliente.Cliente;
 import br.com.ifpe.oxefood.modelo.cliente.ClienteService;
-
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 @RestController //Faz a classe ser um controller
@@ -26,6 +27,10 @@ import jakarta.validation.Valid;
 @CrossOrigin //Utilizada para o controller receber requisições do React
 
 public class ClienteController {
+    
+    @Autowired
+    private UsuarioService usuarioService;
+
       @Autowired //Instanciar no cliente service
    private ClienteService clienteService;
 
@@ -59,6 +64,14 @@ public class ClienteController {
        clienteService.delete(id);
        return ResponseEntity.ok().build();
    }
+       @PutMapping("/{id}")
+    public ResponseEntity<Cliente> update(@PathVariable("id") Long id, @RequestBody ClienteRequest clienteRequest, HttpServletRequest request) {
+
+	    clienteService.update(id, clienteRequest.build(), usuarioService.obterUsuarioLogado(request)));
+	    return ResponseEntity.ok().build();
+    }
+
+   
 
    }
 

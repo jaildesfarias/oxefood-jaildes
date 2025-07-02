@@ -7,6 +7,7 @@ import org.hibernate.annotations.Fetch;
 
 import org.hibernate.annotations.SQLRestriction;
 
+import br.com.ifpe.oxefood.modelo.acesso.Usuario;
 import br.com.ifpe.oxefood.modelo.enderecoCliente.EnderecoCliente;
 import br.com.ifpe.oxefood.util.entity.EntidadeAuditavel;
 import jakarta.persistence.Column;

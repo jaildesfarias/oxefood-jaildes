@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.ifpe.oxefood.modelo.Usuario;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -51,4 +52,19 @@ public class ClienteService {
 
     repository.save(cliente);
   }
+  @Transactional
+public Cliente save(Cliente cliente, Usuario usuarioLogado) {
+
+       usuarioService.save(cliente.getUsuario());
+
+       for (Perfil perfil : cliente.getUsuario().getRoles()) {
+           perfil.setHabilitado(Boolean.TRUE);
+           perfilUsuarioRepository.save(perfil);
+       }
+
+       cliente.setHabilitado(Boolean.TRUE);
+       cliente.setCriadoPor(usuarioLogado);
+       return repository.save(cliente);
+}
+
 }
