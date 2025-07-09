@@ -20,7 +20,11 @@ import br.com.ifpe.oxefood.modelo.categoriaProduto.CategoriaProdutoService;
 import jakarta.validation.Valid;
 
 @RestController 
+<<<<<<< HEAD
 @RequestMapping("/api/categoriaproduto") 
+=======
+@RequestMapping("/api/categoriaProduto") 
+>>>>>>> b507e37c12a19568d02933b6ec66a3ef91667cc3
 @CrossOrigin
 public class CategoriaProdutoController {
 
@@ -31,7 +35,11 @@ public class CategoriaProdutoController {
     public ResponseEntity<CategoriaProduto> save(@RequestBody @Valid CategoriaProdutoRequest request) {
 
         CategoriaProduto categoriaProduto = categoriaProdutoService.save(request.build());
+<<<<<<< HEAD
         return new ResponseEntity<CategoriaProduto>(categoriaProduto, HttpStatus.CREATED);
+=======
+        return new ResponseEntity<>(categoriaProduto, HttpStatus.CREATED);
+>>>>>>> b507e37c12a19568d02933b6ec66a3ef91667cc3
     }
 
     @GetMapping

@@ -22,15 +22,21 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.ifpe.oxefood.modelo.cliente.Cliente;
 import br.com.ifpe.oxefood.modelo.cliente.ClienteService;
 
-@RestController
-@RequestMapping("/api/cliente") // mapeamento por rotas
-@CrossOrigin
+import jakarta.validation.Valid;
+
+
+@CrossOrigin(origins = "http://localhost:3001")//Utilizada para o controller receber requisições do React
+
+@RestController //Faz a classe ser um controller
+@RequestMapping("/api/cliente")
+
 
 
 public class ClienteController {
-  @Autowired
-  private ClienteService clienteService;
+      @Autowired //Instanciar no cliente service
+   private ClienteService clienteService;
 
+<<<<<<< HEAD
   @Autowired
   private EnderecoClienteService enderecoClienteService;
 
@@ -71,12 +77,26 @@ public class ClienteController {
   public List<Cliente> listarTodos() {
     return clienteService.listarTodos();
   }
+=======
+   @PostMapping //Especificar que essa função vai receber requisições do tipo Post
+   public ResponseEntity<Cliente> save(@RequestBody @Valid ClienteRequest request) {
 
-  @GetMapping("/{id}")
-  public Cliente obterPorID(@PathVariable Long id) {
-    return clienteService.obterPorID(id);
-  }
+       Cliente cliente = clienteService.save(request.build());
+       return new ResponseEntity<Cliente>(cliente, HttpStatus.CREATED);
+   }
 
+   @GetMapping
+    public List<Cliente> listarTodos() {
+        return clienteService.listarTodos();
+    }
+>>>>>>> b507e37c12a19568d02933b6ec66a3ef91667cc3
+
+    @GetMapping("/{id}")
+    public Cliente obterPorID(@PathVariable Long id) {
+        return clienteService.obterPorID(id);
+    }
+
+<<<<<<< HEAD
   @GetMapping("/{id}/enderecos")
   public ResponseEntity<List<EnderecoCliente>> listarEnderecosDoCliente(@PathVariable Long id) {
     List<EnderecoCliente> enderecos = enderecoClienteService.buscarPorClienteId(id);
@@ -108,3 +128,23 @@ public class ClienteController {
   }
 
 }
+=======
+    @PutMapping("/{id}") 
+    public ResponseEntity<Cliente> update(@PathVariable("id") Long id, @RequestBody ClienteRequest request) { //Recebe o id e os dados do cliente
+
+       clienteService.update(id, request.build()); //Objeto preenchido sera enviado para o service
+       return ResponseEntity.ok().build();
+ }
+
+   @DeleteMapping("/{id}") // passar o id do cliente que eu quero remover
+   public ResponseEntity<Void> delete(@PathVariable Long id) { //repassar o id para a função delete
+
+       clienteService.delete(id);
+       return ResponseEntity.ok().build();
+   }
+
+   }
+
+
+
+>>>>>>> b507e37c12a19568d02933b6ec66a3ef91667cc3

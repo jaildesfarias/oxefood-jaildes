@@ -3,6 +3,10 @@ package br.com.ifpe.oxefood.modelo.entregador;
 import java.time.LocalDate;
 
 import org.hibernate.annotations.SQLRestriction;
+<<<<<<< HEAD
+=======
+
+>>>>>>> b507e37c12a19568d02933b6ec66a3ef91667cc3
 import br.com.ifpe.oxefood.util.entity.EntidadeAuditavel;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,6 +28,10 @@ import lombok.Setter;
 @NoArgsConstructor
 
 public class Entregador extends EntidadeAuditavel {
+<<<<<<< HEAD
+=======
+ private static final long serialVersionUID = 1L;
+>>>>>>> b507e37c12a19568d02933b6ec66a3ef91667cc3
 
   @Column
   private String nome;

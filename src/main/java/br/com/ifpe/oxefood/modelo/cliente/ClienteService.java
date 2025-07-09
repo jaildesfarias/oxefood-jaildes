@@ -15,15 +15,18 @@ import jakarta.transaction.Transactional;
 public class ClienteService {
 
     @Autowired
-    private UsuarioService usuarioService;
+    private ClienteRepository repository;
 
     @Autowired
-    private ClienteRepository repository;
+    private EnderecoClienteRepository enderecoClienteRepository;
+
+    @Autowired
+    private UsuarioService usuarioService;
 
     @Autowired
     private PerfilRepository perfilUsuarioRepository;
 
-    @Transactional // escopo de transação no banco de dados
+    @Transactional
     public Cliente save(Cliente cliente) {
 
         usuarioService.save(cliente.getUsuario());
@@ -38,13 +41,11 @@ public class ClienteService {
     }
 
     public List<Cliente> listarTodos() {
-
-        return repository.findAll(); // select * from cliente
+        return repository.findAll();
     }
 
     public Cliente obterPorID(Long id) {
-
-        return repository.findById(id).get(); // select * from cliente where id= ?
+        return repository.findById(id).orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
     }
 
     @Transactional
@@ -74,11 +75,57 @@ public class ClienteService {
 
     @Transactional
     public void delete(Long id) {
-
-        Cliente cliente = repository.findById(id).get();
+        Cliente cliente = repository.findById(id).orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
         cliente.setHabilitado(Boolean.FALSE);
-
         repository.save(cliente);
     }
 
+    @Transactional
+    public EnderecoCliente adicionarEnderecoCliente(Long clienteId, EnderecoCliente endereco) {
+        Cliente cliente = this.obterPorID(clienteId);
+        endereco.setCliente(cliente);
+        endereco.setHabilitado(Boolean.TRUE);
+        enderecoClienteRepository.save(endereco);
+
+        List<EnderecoCliente> listaEnderecoCliente = cliente.getEnderecos();
+
+        if (listaEnderecoCliente == null) {
+            listaEnderecoCliente = new ArrayList<>();
+        }
+
+        listaEnderecoCliente.add(endereco);
+        cliente.setEnderecos(listaEnderecoCliente);
+        repository.save(cliente);
+
+        return endereco;
+    }
+
+    @Transactional
+    public EnderecoCliente atualizarEnderecoCliente(Long id, EnderecoCliente enderecoAlterado) {
+        EnderecoCliente endereco = enderecoClienteRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Endereço não encontrado"));
+
+        endereco.setRua(enderecoAlterado.getRua());
+        endereco.setNumero(enderecoAlterado.getNumero());
+        endereco.setBairro(enderecoAlterado.getBairro());
+        endereco.setCep(enderecoAlterado.getCep());
+        endereco.setCidade(enderecoAlterado.getCidade());
+        endereco.setEstado(enderecoAlterado.getEstado());
+        endereco.setComplemento(enderecoAlterado.getComplemento());
+
+        return enderecoClienteRepository.save(endereco);
+    }
+
+    @Transactional
+    public void removerEnderecoCliente(Long idEndereco) {
+        EnderecoCliente endereco = enderecoClienteRepository.findById(idEndereco)
+            .orElseThrow(() -> new RuntimeException("Endereço não encontrado"));
+
+        endereco.setHabilitado(Boolean.FALSE);
+        enderecoClienteRepository.save(endereco);
+
+        Cliente cliente = this.obterPorID(endereco.getCliente().getId());
+        cliente.getEnderecos().remove(endereco);
+        repository.save(cliente);
+    }
 }
