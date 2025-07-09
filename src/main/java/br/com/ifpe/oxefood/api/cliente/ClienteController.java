@@ -16,15 +16,24 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.ifpe.oxefood.modelo.UsuarioService;
+import br.com.ifpe.oxefood.modelo.acesso.UsuarioService;
 import br.com.ifpe.oxefood.modelo.cliente.Cliente;
 import br.com.ifpe.oxefood.modelo.cliente.ClienteService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
+
+@CrossOrigin(origins = "http://localhost:3001")//Utilizada para o controller receber requisições do React
+
 @RestController //Faz a classe ser um controller
 @RequestMapping("/api/cliente")
-@CrossOrigin //Utilizada para o controller receber requisições do React
+
+@Tag(
+    name = "API Cliente",
+    description = "API responsável pelos servidos de cliente no sistema"
+)
 
 public class ClienteController {
     
@@ -33,8 +42,12 @@ public class ClienteController {
 
       @Autowired //Instanciar no cliente service
    private ClienteService clienteService;
-
-   @PostMapping //Especificar que essa função vai receber requisições do tipo Post
+   
+   @Operation(
+       summary = "Serviço responsável por salvar um cliente no sistema.",
+       description = "Exemplo de descrição de um endpoint responsável por inserir um cliente no sistema."
+   )
+@PostMapping //Especificar que essa função vai receber requisições do tipo Post
    public ResponseEntity<Cliente> save(@RequestBody @Valid ClienteRequest request) {
 
        Cliente cliente = clienteService.save(request.build());

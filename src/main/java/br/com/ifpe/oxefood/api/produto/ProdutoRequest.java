@@ -1,7 +1,12 @@
 package br.com.ifpe.oxefood.api.produto;
 
+<<<<<<< HEAD
 
 import java.time.LocalDate;
+=======
+import br.com.ifpe.oxefood.modelo.produto.Produto;
+
+>>>>>>> b507e37c12a19568d02933b6ec66a3ef91667cc3
 import jakarta.validation.constraints.DecimalMax; // Importe este
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;

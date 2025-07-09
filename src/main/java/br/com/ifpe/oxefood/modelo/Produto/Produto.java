@@ -6,6 +6,7 @@ import br.com.ifpe.oxefood.modelo.categoriaProduto.CategoriaProduto;
 import br.com.ifpe.oxefood.util.entity.EntidadeAuditavel;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -14,20 +15,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity // transforma numa classe exisitivel no jpa
-@Table(name = "Produto") // especifica que a classe sera convertida em tabela
-@SQLRestriction("habilitado = true") // acresenta em todas as consultas uma clausula where: where habilidado = true
-
-@Builder // forma de instanciar objetos da classe
+@Entity
+@Table(name = "Produto")
+@SQLRestriction("habilitado = true")
+@Builder
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class Produto extends EntidadeAuditavel {
-  
-  @ManyToOne
-   private CategoriaProduto categoria;
+ private static final long serialVersionUID = 1L;
 
   @Column
   private String codigo;
@@ -47,4 +44,8 @@ public class Produto extends EntidadeAuditavel {
   @Column
   private Integer tempoEntregaMaximo;
 
+  // Adicione este atributo:
+  @ManyToOne
+  @JoinColumn(name = "categoria_id")
+  private CategoriaProduto categoria;
 }
