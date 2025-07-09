@@ -1,6 +1,10 @@
 package br.com.ifpe.oxefood.api.categoriaProduto;
+<<<<<<< HEAD
+import org.springframework.web.bind.annotation.CrossOrigin;
+=======
 
 import org.hibernate.validator.constraints.Length;
+>>>>>>> b507e37c12a19568d02933b6ec66a3ef91667cc3
 
 import br.com.ifpe.oxefood.modelo.categoriaProduto.CategoriaProduto;
 import jakarta.validation.constraints.NotEmpty;
@@ -13,6 +17,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @NoArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")
 @AllArgsConstructor
 public class CategoriaProdutoRequest {
 

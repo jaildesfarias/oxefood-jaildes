@@ -31,6 +31,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EnderecoCliente extends EntidadeAuditavel {
+<<<<<<< HEAD
     
     @OneToMany(mappedBy = "cliente", orphanRemoval = true, fetch = FetchType.EAGER)
        private List<EnderecoCliente> enderecos;
@@ -45,10 +46,14 @@ public class EnderecoCliente extends EntidadeAuditavel {
 
     @JsonIgnore  
 
+=======
+
+    private static final long serialVersionUID = 1L;
+
+    @JsonIgnore
+>>>>>>> 28ae0514b15d9e01aa1b2b6cd90e025bb364e5f1
     @ManyToOne
     private Cliente cliente;
-     
-    private static final long serialVersionUID = 1L;
 
     @Column
     private String rua;
@@ -70,5 +75,4 @@ public class EnderecoCliente extends EntidadeAuditavel {
 
     @Column
     private String complemento;
-
 }

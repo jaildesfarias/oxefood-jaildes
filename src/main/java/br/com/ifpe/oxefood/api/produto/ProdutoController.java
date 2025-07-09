@@ -19,10 +19,13 @@ import br.com.ifpe.oxefood.modelo.produto.ProdutoService;
 
 
 
+<<<<<<< HEAD
+=======
 
 @RestController //Faz a classe ser um controller
 @RequestMapping("/api/produto")
 @CrossOrigin //Utilizada para o controller receber requisições do React
+>>>>>>> b507e37c12a19568d02933b6ec66a3ef91667cc3
 public class ProdutoController {
 
    @Autowired //Instanciar no cliente service

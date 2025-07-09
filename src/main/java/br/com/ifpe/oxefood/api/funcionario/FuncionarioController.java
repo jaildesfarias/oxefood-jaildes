@@ -15,8 +15,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+<<<<<<< HEAD
 import br.com.ifpe.oxefood.modelo.funcionario.Funcionario;
 import br.com.ifpe.oxefood.modelo.funcionario.FuncionarioService;
+=======
+import br.com.ifpe.oxefood.modelo.acesso.Perfil;
+import br.com.ifpe.oxefood.modelo.funcionario.Funcionario;
+import br.com.ifpe.oxefood.modelo.funcionario.FuncionarioService;
+import br.com.ifpe.oxefood.modelo.funcionario.TipoFuncionario;
+>>>>>>> 28ae0514b15d9e01aa1b2b6cd90e025bb364e5f1
 import jakarta.validation.Valid;
 
 @RestController
@@ -31,6 +38,18 @@ public class FuncionarioController {
     public ResponseEntity<Funcionario> save(@RequestBody @Valid FuncionarioRequest request) {
 
         Funcionario funcionarioNovo = request.build();
+<<<<<<< HEAD
+=======
+
+        if (funcionarioNovo.getTipo().equals(TipoFuncionario.ADMINISTRADOR)) {
+            funcionarioNovo.getUsuario().getRoles().add(new Perfil(Perfil.ROLE_FUNCIONARIO_ADMIN));
+
+        } else if (funcionarioNovo.getTipo().equals(TipoFuncionario.OPERADOR)) {
+
+            funcionarioNovo.getUsuario().getRoles().add(new Perfil(Perfil.ROLE_FUNCIONARIO_USER));
+        }
+
+>>>>>>> 28ae0514b15d9e01aa1b2b6cd90e025bb364e5f1
         Funcionario funcionario = funcionarioService.save(funcionarioNovo);
         return new ResponseEntity<Funcionario>(funcionario, HttpStatus.CREATED);
     }
@@ -61,4 +80,8 @@ public class FuncionarioController {
         return ResponseEntity.ok().build();
     }
 
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 28ae0514b15d9e01aa1b2b6cd90e025bb364e5f1

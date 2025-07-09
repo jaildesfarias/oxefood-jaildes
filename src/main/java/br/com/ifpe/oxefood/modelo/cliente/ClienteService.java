@@ -13,10 +13,11 @@ import br.com.ifpe.oxefood.modelo.acesso.UsuarioService;
 import br.com.ifpe.oxefood.modelo.mensagens.EmailService;
 import jakarta.transaction.Transactional;
 
-@Service // Faz a classe ser um serviço
+@Service
 public class ClienteService {
 
     @Autowired
+<<<<<<< HEAD
     private EmailService emailService;
     
        @Transactional
@@ -34,10 +35,11 @@ public class ClienteService {
 
     @Autowired // Instanciar um objeto de forma que eu possar usar os metodos e atributos dessa
                // classe
+=======
+>>>>>>> 28ae0514b15d9e01aa1b2b6cd90e025bb364e5f1
     private ClienteRepository repository;
 
-    @Autowired // Instanciar um objeto de forma que eu possar usar os metodos e atributos dessa
-               // classe
+    @Autowired
     private EnderecoClienteRepository enderecoClienteRepository;
 
     @Autowired
@@ -46,8 +48,8 @@ public class ClienteService {
     @Autowired
     private PerfilRepository perfilUsuarioRepository;
 
-    @Transactional // Se um falhar as outras seram desfeitas e não seram gravadas no banco
-    public Cliente save(Cliente cliente) { // Recebe o objeto cliente que ele vai salvar no banco
+    @Transactional
+    public Cliente save(Cliente cliente) {
 
         usuarioService.save(cliente.getUsuario());
 
@@ -58,62 +60,59 @@ public class ClienteService {
 
         cliente.setHabilitado(Boolean.TRUE);
         return repository.save(cliente);
-
-        // Ou voce pode fazer
-        // Cliente c = repository.save(cliente);
-        // return c;
     }
 
     public List<Cliente> listarTodos() {
-
         return repository.findAll();
     }
 
     public Cliente obterPorID(Long id) {
-
-        return repository.findById(id).get();
+        return repository.findById(id).orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
     }
 
     @Transactional
     public void update(Long id, Cliente clienteAlterado) {
+        Cliente cliente = repository.findById(id).orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
 
-        Cliente cliente = repository.findById(id).get(); // Consultar no banco o cliente
         cliente.setNome(clienteAlterado.getNome());
         cliente.setDataNascimento(clienteAlterado.getDataNascimento());
         cliente.setCpf(clienteAlterado.getCpf());
         cliente.setFoneCelular(clienteAlterado.getFoneCelular());
         cliente.setFoneFixo(clienteAlterado.getFoneFixo());
 
-        repository.save(cliente); // Função para cadastra e alterar objeto
+        if (clienteAlterado.getEnderecos() != null) {
+            clienteAlterado.getEnderecos().forEach(endereco -> endereco.setCliente(cliente));
+            cliente.setEnderecos(clienteAlterado.getEnderecos());
+        } else {
+            if (cliente.getEnderecos() == null) {
+                cliente.setEnderecos(new ArrayList<>());
+            } else {
+                cliente.getEnderecos().clear();
+            }
+        }
+
+        cliente.setVersao(cliente.getVersao() + 1);
+        repository.save(cliente);
     }
 
-    @Transactional // Toda vez que for mexer no banco utilizar o transactional
+    @Transactional
     public void delete(Long id) {
-
-        Cliente cliente = repository.findById(id).get();
+        Cliente cliente = repository.findById(id).orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
         cliente.setHabilitado(Boolean.FALSE);
-
-        repository.save(cliente); // Na verdade está sendo alterado se realmente fosse deletado em vez de save
-                                  // seria o delete
+        repository.save(cliente);
     }
 
     @Transactional
     public EnderecoCliente adicionarEnderecoCliente(Long clienteId, EnderecoCliente endereco) {
-
         Cliente cliente = this.obterPorID(clienteId);
-
-        // Primeiro salva o EnderecoCliente:
-
         endereco.setCliente(cliente);
         endereco.setHabilitado(Boolean.TRUE);
         enderecoClienteRepository.save(endereco);
 
-        // Depois acrescenta o endereço criado ao cliente e atualiza o cliente:
-
         List<EnderecoCliente> listaEnderecoCliente = cliente.getEnderecos();
 
         if (listaEnderecoCliente == null) {
-            listaEnderecoCliente = new ArrayList<EnderecoCliente>();
+            listaEnderecoCliente = new ArrayList<>();
         }
 
         listaEnderecoCliente.add(endereco);
@@ -125,8 +124,9 @@ public class ClienteService {
 
     @Transactional
     public EnderecoCliente atualizarEnderecoCliente(Long id, EnderecoCliente enderecoAlterado) {
+        EnderecoCliente endereco = enderecoClienteRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Endereço não encontrado"));
 
-        EnderecoCliente endereco = enderecoClienteRepository.findById(id).get();
         endereco.setRua(enderecoAlterado.getRua());
         endereco.setNumero(enderecoAlterado.getNumero());
         endereco.setBairro(enderecoAlterado.getBairro());
@@ -140,8 +140,9 @@ public class ClienteService {
 
     @Transactional
     public void removerEnderecoCliente(Long idEndereco) {
+        EnderecoCliente endereco = enderecoClienteRepository.findById(idEndereco)
+            .orElseThrow(() -> new RuntimeException("Endereço não encontrado"));
 
-        EnderecoCliente endereco = enderecoClienteRepository.findById(idEndereco).get();
         endereco.setHabilitado(Boolean.FALSE);
         enderecoClienteRepository.save(endereco);
 
@@ -149,5 +150,8 @@ public class ClienteService {
         cliente.getEnderecos().remove(endereco);
         repository.save(cliente);
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 28ae0514b15d9e01aa1b2b6cd90e025bb364e5f1
 }

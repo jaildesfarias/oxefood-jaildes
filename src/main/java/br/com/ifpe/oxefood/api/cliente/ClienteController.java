@@ -1,8 +1,11 @@
-
 package br.com.ifpe.oxefood.api.cliente;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import br.com.ifpe.oxefood.modelo.cliente.EnderecoCliente;
+import br.com.ifpe.oxefood.modelo.cliente.EnderecoClienteService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +38,7 @@ import jakarta.validation.Valid;
     description = "API responsável pelos servidos de cliente no sistema"
 )
 
+
 public class ClienteController {
     
     @Autowired
@@ -42,12 +46,59 @@ public class ClienteController {
 
       @Autowired //Instanciar no cliente service
    private ClienteService clienteService;
+<<<<<<< HEAD
    
    @Operation(
        summary = "Serviço responsável por salvar um cliente no sistema.",
        description = "Exemplo de descrição de um endpoint responsável por inserir um cliente no sistema."
    )
 @PostMapping //Especificar que essa função vai receber requisições do tipo Post
+=======
+
+<<<<<<< HEAD
+  @Autowired
+  private EnderecoClienteService enderecoClienteService;
+
+  // função salvar
+  @PostMapping
+  public ResponseEntity<Cliente> save(@RequestBody @Valid ClienteRequest request) {
+
+    List<EnderecoCliente> enderecos = null;
+    if (request.getIdEnderecos() != null && !request.getIdEnderecos().isEmpty()) {
+      enderecos = request.getIdEnderecos().stream()
+              .map(enderecoClienteService::obterPorID)
+              .collect(Collectors.toList());
+    }
+
+    Cliente cliente = request.toEntity(enderecos);
+    Cliente clienteSalvo = clienteService.save(cliente);
+
+    return new ResponseEntity<>(clienteSalvo, HttpStatus.CREATED);
+  }
+
+  @PostMapping("/{id}/endereco")
+  public ResponseEntity<EnderecoCliente> adicionarEndereco(@PathVariable("id") Long idCliente,
+                                                           @RequestBody @Valid EnderecoCliente endereco) {
+    Cliente cliente = clienteService.obterPorID(idCliente);
+
+    if (cliente == null) {
+      return ResponseEntity.notFound().build();
+    }
+
+    endereco.setCliente(cliente); // Associa o cliente ao endereço
+    EnderecoCliente salvo = enderecoClienteService.save(endereco);
+    return ResponseEntity.status(HttpStatus.CREATED).body(salvo);
+  }
+
+
+
+  @GetMapping
+  public List<Cliente> listarTodos() {
+    return clienteService.listarTodos();
+  }
+=======
+   @PostMapping //Especificar que essa função vai receber requisições do tipo Post
+>>>>>>> 28ae0514b15d9e01aa1b2b6cd90e025bb364e5f1
    public ResponseEntity<Cliente> save(@RequestBody @Valid ClienteRequest request) {
 
        Cliente cliente = clienteService.save(request.build());
@@ -58,12 +109,46 @@ public class ClienteController {
     public List<Cliente> listarTodos() {
         return clienteService.listarTodos();
     }
+>>>>>>> b507e37c12a19568d02933b6ec66a3ef91667cc3
 
     @GetMapping("/{id}")
     public Cliente obterPorID(@PathVariable Long id) {
         return clienteService.obterPorID(id);
     }
 
+<<<<<<< HEAD
+  @GetMapping("/{id}/enderecos")
+  public ResponseEntity<List<EnderecoCliente>> listarEnderecosDoCliente(@PathVariable Long id) {
+    List<EnderecoCliente> enderecos = enderecoClienteService.buscarPorClienteId(id);
+    return ResponseEntity.ok(enderecos);
+  }
+
+
+  @PutMapping("/{id}")
+  public ResponseEntity<Void> update(@PathVariable("id") Long id, @RequestBody @Valid ClienteRequest request) {
+
+    List<EnderecoCliente> enderecos = null;
+    if (request.getIdEnderecos() != null && !request.getIdEnderecos().isEmpty()) {
+      enderecos = request.getIdEnderecos().stream()
+              .map(enderecoClienteService::obterPorID)
+              .collect(Collectors.toList());
+    }
+
+    Cliente cliente = request.toEntity(enderecos);
+    clienteService.update(id, cliente);
+
+    return ResponseEntity.ok().build();
+  }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> delete(@PathVariable Long id) {
+
+    clienteService.delete(id);
+    return ResponseEntity.ok().build();
+  }
+
+}
+=======
     @PutMapping("/{id}") 
     public ResponseEntity<Cliente> update(@PathVariable("id") Long id, @RequestBody ClienteRequest request) { //Recebe o id e os dados do cliente
 
@@ -90,3 +175,4 @@ public class ClienteController {
 
 
 
+>>>>>>> b507e37c12a19568d02933b6ec66a3ef91667cc3
