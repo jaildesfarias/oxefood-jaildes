@@ -1,8 +1,11 @@
-
 package br.com.ifpe.oxefood.api.cliente;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import br.com.ifpe.oxefood.modelo.cliente.EnderecoCliente;
+import br.com.ifpe.oxefood.modelo.cliente.EnderecoClienteService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,17 +26,46 @@ import br.com.ifpe.oxefood.modelo.cliente.ClienteService;
 @RequestMapping("/api/cliente") // mapeamento por rotas
 @CrossOrigin
 
+
 public class ClienteController {
   @Autowired
   private ClienteService clienteService;
 
+  @Autowired
+  private EnderecoClienteService enderecoClienteService;
+
   // função salvar
   @PostMapping
-  public ResponseEntity<Cliente> save(@RequestBody ClienteRequest request) {
+  public ResponseEntity<Cliente> save(@RequestBody @Valid ClienteRequest request) {
 
-    Cliente cliente = clienteService.save(request.build());
-    return new ResponseEntity<Cliente>(cliente, HttpStatus.CREATED);
+    List<EnderecoCliente> enderecos = null;
+    if (request.getIdEnderecos() != null && !request.getIdEnderecos().isEmpty()) {
+      enderecos = request.getIdEnderecos().stream()
+              .map(enderecoClienteService::obterPorID)
+              .collect(Collectors.toList());
+    }
+
+    Cliente cliente = request.toEntity(enderecos);
+    Cliente clienteSalvo = clienteService.save(cliente);
+
+    return new ResponseEntity<>(clienteSalvo, HttpStatus.CREATED);
   }
+
+  @PostMapping("/{id}/endereco")
+  public ResponseEntity<EnderecoCliente> adicionarEndereco(@PathVariable("id") Long idCliente,
+                                                           @RequestBody @Valid EnderecoCliente endereco) {
+    Cliente cliente = clienteService.obterPorID(idCliente);
+
+    if (cliente == null) {
+      return ResponseEntity.notFound().build();
+    }
+
+    endereco.setCliente(cliente); // Associa o cliente ao endereço
+    EnderecoCliente salvo = enderecoClienteService.save(endereco);
+    return ResponseEntity.status(HttpStatus.CREATED).body(salvo);
+  }
+
+
 
   @GetMapping
   public List<Cliente> listarTodos() {
@@ -45,20 +77,34 @@ public class ClienteController {
     return clienteService.obterPorID(id);
   }
 
-  @PutMapping("/{id}")
-  public ResponseEntity<Cliente> update(@PathVariable("id") Long id, @RequestBody ClienteRequest request) {
+  @GetMapping("/{id}/enderecos")
+  public ResponseEntity<List<EnderecoCliente>> listarEnderecosDoCliente(@PathVariable Long id) {
+    List<EnderecoCliente> enderecos = enderecoClienteService.buscarPorClienteId(id);
+    return ResponseEntity.ok(enderecos);
+  }
 
-    clienteService.update(id, request.build());
+
+  @PutMapping("/{id}")
+  public ResponseEntity<Void> update(@PathVariable("id") Long id, @RequestBody @Valid ClienteRequest request) {
+
+    List<EnderecoCliente> enderecos = null;
+    if (request.getIdEnderecos() != null && !request.getIdEnderecos().isEmpty()) {
+      enderecos = request.getIdEnderecos().stream()
+              .map(enderecoClienteService::obterPorID)
+              .collect(Collectors.toList());
+    }
+
+    Cliente cliente = request.toEntity(enderecos);
+    clienteService.update(id, cliente);
+
     return ResponseEntity.ok().build();
   }
 
-  
- @PutMapping("/{id}")
- public ResponseEntity<Cliente> update(@PathVariable("id") Long id, @RequestBody ClienteRequest request) {
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> delete(@PathVariable Long id) {
 
-       clienteService.update(id, request.build());
-       return ResponseEntity.ok().build();
- }
-
+    clienteService.delete(id);
+    return ResponseEntity.ok().build();
+  }
 
 }

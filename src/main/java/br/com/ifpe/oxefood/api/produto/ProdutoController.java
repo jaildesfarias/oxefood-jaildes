@@ -23,6 +23,7 @@ import br.com.ifpe.oxefood.modelo.categoriaProduto.CategoriaProdutoService;
 @RequestMapping("/api/produto") // mapeamento por rotas
 @CrossOrigin
 
+
 public class ProdutoController {
   @Autowired
   private ProdutoService produtoService;
