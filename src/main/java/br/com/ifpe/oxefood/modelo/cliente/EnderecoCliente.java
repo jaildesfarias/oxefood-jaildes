@@ -1,20 +1,12 @@
 package br.com.ifpe.oxefood.modelo.cliente;
-
 import org.hibernate.annotations.SQLRestriction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.FetchMode;
-import br.com.ifpe.oxefood.modelo.cliente.Cliente;
-import br.com.ifpe.oxefood.modelo.usuario.Usuario;
 
 import br.com.ifpe.oxefood.util.entity.EntidadeAuditavel;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,7 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "EnderecoCliente")
+@Table(name = "enderecoCliente")
 @SQLRestriction("habilitado = true")
 @Builder
 @Getter
@@ -31,48 +23,30 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EnderecoCliente extends EntidadeAuditavel {
-<<<<<<< HEAD
-    
-    @OneToMany(mappedBy = "cliente", orphanRemoval = true, fetch = FetchType.EAGER)
-       private List<EnderecoCliente> enderecos;
+     
+   @JsonIgnore
+   @ManyToOne
+   private Cliente cliente;
 
-   @Column(nullable = false, length = 100)
-   private String nome;
+   @Column
+   private String rua;
 
-   @JoinColumn(nullable = false)
-   private Usuario usuario;
+   @Column
+   private String numero;
 
-    @JsonIgnore //Se não colocar ele iria ficar carregando 
+   @Column
+   private String bairro;
 
-    @JsonIgnore  
+   @Column
+   private String cep;
 
-=======
+   @Column
+   private String cidade;
 
-    private static final long serialVersionUID = 1L;
+   @Column
+   private String estado;
 
-    @JsonIgnore
->>>>>>> 28ae0514b15d9e01aa1b2b6cd90e025bb364e5f1
-    @ManyToOne
-    private Cliente cliente;
+   @Column
+   private String complemento;
 
-    @Column
-    private String rua;
-
-    @Column
-    private String numero;
-
-    @Column
-    private String bairro;
-
-    @Column
-    private String cep;
-
-    @Column
-    private String cidade;
-
-    @Column
-    private String estado;
-
-    @Column
-    private String complemento;
 }

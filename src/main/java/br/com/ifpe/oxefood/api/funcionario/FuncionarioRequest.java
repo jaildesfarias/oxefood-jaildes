@@ -84,13 +84,12 @@ public class FuncionarioRequest {
                 .build();
     }
 
-       public Usuario buildUsuario() {
+    public Usuario buildUsuario() {
 
         return Usuario.builder()
                 .username(email)
                 .password(password)
                 .build();
     }
-
 
 }

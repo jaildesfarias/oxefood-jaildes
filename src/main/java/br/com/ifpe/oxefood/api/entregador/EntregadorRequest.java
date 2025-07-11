@@ -2,17 +2,17 @@ package br.com.ifpe.oxefood.api.entregador;
 
 import java.time.LocalDate;
 
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.br.CPF;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import br.com.ifpe.oxefood.modelo.entregador.Entregador;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PastOrPresent; // Para datas
-import jakarta.validation.constraints.Pattern; // Para o prefixo do telefone
-import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.Past; // Para datas
+import lombok.AllArgsConstructor; // Para o prefixo do telefone
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,66 +23,57 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class EntregadorRequest {
 
-    @NotBlank(message = "O nome é obrigatório.")
-    @Size(max = 100, message = "O nome deve ter no máximo 100 caracteres.")
-    private String nome;
+@NotNull(message = "O Nome é de preenchimento obrigatório")
+@NotEmpty(message = "O Nome é de preenchimento obrigatório")
+@Length(max = 100, message = "O Nome deverá ter no máximo {max} caracteres")
+private String nome;
 
-    @NotBlank(message = "O CPF é obrigatório.")
-    @Pattern(regexp = "\\d{11}", message = "O CPF deve conter 11 dígitos numéricos.")
-    private String cpf;
+@NotBlank(message = "O CPF é de preenchimento obrigatório")
+@CPF
+private String cpf;
 
-    @NotBlank(message = "O RG é obrigatório.")
-    @Size(max = 20, message = "O RG deve ter no máximo 20 caracteres.")
-    private String rg;
+@NotBlank(message = "O RG é de preenchimento obrigatório")
+private String rg;
 
-    @NotNull(message = "A data de nascimento é obrigatória.")
-    @PastOrPresent(message = "A data de nascimento não pode ser futura.")
-    @JsonFormat(pattern = "dd/MM/yyyy")
-    private LocalDate dataNascimento;
+@Past
+@JsonFormat(pattern = "dd/MM/yyyy")
+private LocalDate dataNascimento;
 
-    @NotBlank(message = "O telefone celular é obrigatório.")
-    @Pattern(regexp = "^81\\d{9}$", message = "O telefone celular deve começar com '81' e ter 11 dígitos (ex: 81987654321).")
-    private String foneCelular;
+@Length(min = 8, max = 20, message = "O campo Fone Celular tem que ter entre {min} e {max} caracteres")
+private String foneCelular;
 
-    @Pattern(regexp = "^\\d{10,11}$|^$", message = "O telefone fixo deve ter 10 ou 11 dígitos numéricos ou ser vazio.") // Permite vazio ou com dígitos
-    private String foneFixo;
+@Length(min = 8, max = 20, message = "O campo Fone Fixo tem que ter entre {min} e {max} caracteres")
+private String foneFixo;
 
-    @NotNull(message = "A quantidade de entregas realizadas é obrigatória.")
-    @Min(value = 0, message = "A quantidade de entregas realizadas não pode ser negativa.")
-    private Integer qtdEntregasRealizadas;
+private Integer qtdEntregasRealizadas;
 
-    @NotNull(message = "O valor do frete é obrigatório.")
-    @DecimalMin(value = "0.0", message = "O valor do frete não pode ser negativo.")
-    private Double valorFrete;
+private Double valorFrete;
 
-    @NotBlank(message = "A rua do endereço é obrigatória.")
-    @Size(max = 150, message = "A rua do endereço deve ter no máximo 150 caracteres.")
-    private String enderecoRua;
+@NotBlank(message = "A rua é de preenchimento obrigatório")
+private String enderecoRua;
 
-    @Size(max = 100, message = "O complemento do endereço deve ter no máximo 100 caracteres.")
-    private String enderecoComplemento;
 
-    @NotBlank(message = "O número do endereço é obrigatório.")
-    @Size(max = 20, message = "O número do endereço deve ter no máximo 20 caracteres.")
-    private String enderecoNumero;
+private String enderecoComplemento;
 
-    @NotBlank(message = "O bairro do endereço é obrigatório.")
-    @Size(max = 100, message = "O bairro do endereço deve ter no máximo 100 caracteres.")
-    private String enderecoBairro;
+@NotBlank(message = "O número da resdência é de preenchimento obrigatório")
+private String enderecoNumero;
 
-    @NotBlank(message = "A cidade do endereço é obrigatória.")
-    @Size(max = 100, message = "A cidade do endereço deve ter no máximo 100 caracteres.")
-    private String enderecoCidade;
+@NotBlank(message = "O Bairro é de preenchimento obrigatório")
+private String enderecoBairro;
 
-    @NotBlank(message = "O CEP do endereço é obrigatório.")
-    @Pattern(regexp = "\\d{8}", message = "O CEP deve conter 8 dígitos numéricos.")
-    private String enderecoCep;
+@NotBlank(message = "A Cidade é de preenchimento obrigatório")
+private String enderecoCidade;
 
-    @NotBlank(message = "A UF do endereço é obrigatória.")
-    @Size(min = 2, max = 2, message = "A UF do endereço deve ter 2 caracteres.")
-    private String enderecoUf;
+@NotBlank(message = "O CEP é de preenchimento obrigatório")
+private String enderecoCep;
 
-    public Entregador build() {
+@NotBlank(message = "O Estado é de preenchimento obrigatório")
+private String enderecoUf;
+
+private Boolean ativo;
+
+public Entregador build() {
+
         return Entregador.builder()
                 .nome(nome)
                 .cpf(cpf)
@@ -99,6 +90,7 @@ public class EntregadorRequest {
                 .enderecoCidade(enderecoCidade)
                 .enderecoCep(enderecoCep)
                 .enderecoUf(enderecoUf)
+                .ativo(ativo)
                 .build();
     }
 }

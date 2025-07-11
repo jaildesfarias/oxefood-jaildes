@@ -1,3 +1,4 @@
+
 package br.com.ifpe.oxefood.modelo.acesso;
 
 import org.hibernate.annotations.SQLRestriction;
@@ -13,7 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "Perfil")
+@Table(name = "perfil")
 @SQLRestriction("habilitado = true")
 @Builder
 @Getter
@@ -21,17 +22,16 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Perfil extends EntidadeNegocio implements GrantedAuthority {
-
-    public static final String ROLE_CLIENTE = "CLIENTE";
-    public static final String ROLE_FUNCIONARIO_ADMIN = "ROLE_FUNCIONARIO_ADMIN"; // READ, DELETE, WRITE, UPDATE.
-    public static final String ROLE_FUNCIONARIO_USER = "ROLE_FUNCIONARIO_USER"; // READ, WRITE, UPDATE.
-  private static final long serialVersionUID = 1L;
-
-    private String nome;
-
-    @Override
-    public String getAuthority() {
-        return this.nome;
-    }
-
+  
+   public static final String ROLE_CLIENTE = "CLIENTE";
+   public static final String ROLE_FUNCIONARIO_ADMIN = "ROLE_FUNCIONARIO_ADMIN"; // READ, DELETE, WRITE, UPDATE.
+   public static final String ROLE_FUNCIONARIO_USER = "ROLE_FUNCIONARIO_USER"; // READ, WRITE, UPDATE.
+  
+   private String nome;
+  
+   @Override
+   public String getAuthority() {
+       return this.nome;
+   }
+  
 }

@@ -1,52 +1,46 @@
 package br.com.ifpe.oxefood.modelo.categoriaProduto;
 
-<<<<<<< HEAD
-import org.hibernate.annotations.SQLRestriction;
+import java.util.List;
+import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import br.com.ifpe.oxefood.util.entity.EntidadeAuditavel;
-import jakarta.persistence.Column;
-=======
-import br.com.ifpe.oxefood.util.entity.EntidadeNegocio;
->>>>>>> b507e37c12a19568d02933b6ec66a3ef91667cc3
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+@Service
+public class CategoriaProdutoService {
 
-<<<<<<< HEAD
+    @Autowired
+    private CategoriaProdutoRepository repository;
 
+    @Transactional
+    public CategoriaProduto save(CategoriaProduto categoriaProduto) {
+        categoriaProduto.setHabilitado(Boolean.TRUE);
+        return repository.save(categoriaProduto);
+    }
 
-@Entity
-@Table(name = "CategoriaProduto")
-@SQLRestriction("habilitado = true") // acrescenta em todas as consultas uma clausula where: habilitado = true
-@Builder
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class CategoriaProduto extends EntidadeAuditavel {
+    public List<CategoriaProduto> listarTodos() {
+        return repository.findByHabilitadoTrue();
+    }
 
-   @Column
-   private String descricao;
+    public CategoriaProduto obterPorID(Long id) {
+        return repository.findById(id)
+            .orElseThrow(() -> new RuntimeException("CategoriaProduto não encontrada para o ID: " + id));
+    }
 
+    @Transactional
+    public void update(Long id, CategoriaProduto categoriaProdutoAlterada) {
+        CategoriaProduto categoriaProduto = repository.findById(id)
+            .orElseThrow(() -> new RuntimeException("CategoriaProduto não encontrada para o ID: " + id));
+
+        categoriaProduto.setDescricao(categoriaProdutoAlterada.getDescricao());
+        // repository.save(categoriaProduto); // opcional
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        CategoriaProduto categoriaProduto = repository.findById(id)
+            .orElseThrow(() -> new RuntimeException("CategoriaProduto não encontrada para o ID: " + id));
+
+        categoriaProduto.setHabilitado(Boolean.FALSE);
+        // repository.save(categoriaProduto); // opcional
+    }
 }
-=======
-@Entity
-@Table(name = "CategoriaProduto")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class CategoriaProduto extends EntidadeNegocio {
-
-    private static final long serialVersionUID = 1L;
-
-    private String nome;
-
-    private String descricao;
-}
->>>>>>> b507e37c12a19568d02933b6ec66a3ef91667cc3

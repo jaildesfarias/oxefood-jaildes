@@ -1,42 +1,23 @@
+
 package br.com.ifpe.oxefood.modelo.cliente;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.ifpe.oxefood.modelo.acesso.Perfil;
 import br.com.ifpe.oxefood.modelo.acesso.PerfilRepository;
+import br.com.ifpe.oxefood.modelo.acesso.Usuario;
 import br.com.ifpe.oxefood.modelo.acesso.UsuarioService;
 import br.com.ifpe.oxefood.modelo.mensagens.EmailService;
-import jakarta.transaction.Transactional;
+import br.com.ifpe.oxefood.util.exception.ClienteException;
 
 @Service
 public class ClienteService {
 
     @Autowired
-<<<<<<< HEAD
-    private EmailService emailService;
-    
-       @Transactional
-   public Cliente save(Cliente cliente) {
-
-       cliente.setHabilitado(Boolean.TRUE);
-       cliente.setVersao(1L);
-       cliente.setDataCriacao(LocalDate.now());
-       Cliente clienteSalvo = repository.save(cliente);
-
-       emailService.enviarEmailConfirmacaoCadastroCliente(clienteSalvo);
-
-       return clienteSalvo;
-   }
-
-    @Autowired // Instanciar um objeto de forma que eu possar usar os metodos e atributos dessa
-               // classe
-=======
->>>>>>> 28ae0514b15d9e01aa1b2b6cd90e025bb364e5f1
     private ClienteRepository repository;
 
     @Autowired
@@ -48,8 +29,11 @@ public class ClienteService {
     @Autowired
     private PerfilRepository perfilUsuarioRepository;
 
+    @Autowired
+    private EmailService emailService;
+
     @Transactional
-    public Cliente save(Cliente cliente) {
+    public Cliente save(Cliente cliente, Usuario usuarioLogado) {
 
         usuarioService.save(cliente.getUsuario());
 
@@ -58,8 +42,14 @@ public class ClienteService {
             perfilUsuarioRepository.save(perfil);
         }
 
+        if (!cliente.getFoneCelular().startsWith("(81)") || !cliente.getFoneFixo().startsWith("(81)")) {
+            throw new ClienteException(ClienteException.MSG_PREFIXO_CLIENTE);
+        }
         cliente.setHabilitado(Boolean.TRUE);
-        return repository.save(cliente);
+        cliente.setCriadoPor(usuarioLogado);
+        Cliente clienteSalvo = repository.save(cliente);
+        // emailService.enviarEmailConfirmacaoCadastroCliente(clienteSalvo);
+        return clienteSalvo;
     }
 
     public List<Cliente> listarTodos() {
@@ -67,52 +57,49 @@ public class ClienteService {
     }
 
     public Cliente obterPorID(Long id) {
-        return repository.findById(id).orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
+        return repository.findById(id).get();
     }
 
     @Transactional
-    public void update(Long id, Cliente clienteAlterado) {
-        Cliente cliente = repository.findById(id).orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
-
+    public void update(Long id, Cliente clienteAlterado, Usuario usuarioLogado) {
+        Cliente cliente = repository.findById(id).get();
         cliente.setNome(clienteAlterado.getNome());
         cliente.setDataNascimento(clienteAlterado.getDataNascimento());
         cliente.setCpf(clienteAlterado.getCpf());
         cliente.setFoneCelular(clienteAlterado.getFoneCelular());
         cliente.setFoneFixo(clienteAlterado.getFoneFixo());
 
-        if (clienteAlterado.getEnderecos() != null) {
-            clienteAlterado.getEnderecos().forEach(endereco -> endereco.setCliente(cliente));
-            cliente.setEnderecos(clienteAlterado.getEnderecos());
-        } else {
-            if (cliente.getEnderecos() == null) {
-                cliente.setEnderecos(new ArrayList<>());
-            } else {
-                cliente.getEnderecos().clear();
-            }
-        }
+        cliente.setUltimaModificacaoPor(usuarioLogado);
 
-        cliente.setVersao(cliente.getVersao() + 1);
         repository.save(cliente);
     }
 
     @Transactional
     public void delete(Long id) {
-        Cliente cliente = repository.findById(id).orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
+        Cliente cliente = repository.findById(id).get();
         cliente.setHabilitado(Boolean.FALSE);
         repository.save(cliente);
     }
 
+    public EnderecoCliente obterEnderecoPorID(Long id) {
+        return enderecoClienteRepository.findById(id).get();
+    }
+
     @Transactional
     public EnderecoCliente adicionarEnderecoCliente(Long clienteId, EnderecoCliente endereco) {
+
         Cliente cliente = this.obterPorID(clienteId);
+
+        // Primeiro salva o EnderecoCliente:
         endereco.setCliente(cliente);
         endereco.setHabilitado(Boolean.TRUE);
         enderecoClienteRepository.save(endereco);
 
+        // Depois acrescenta o endereço criado ao cliente e atualiza o cliente:
         List<EnderecoCliente> listaEnderecoCliente = cliente.getEnderecos();
 
         if (listaEnderecoCliente == null) {
-            listaEnderecoCliente = new ArrayList<>();
+            listaEnderecoCliente = new ArrayList<EnderecoCliente>();
         }
 
         listaEnderecoCliente.add(endereco);
@@ -124,9 +111,8 @@ public class ClienteService {
 
     @Transactional
     public EnderecoCliente atualizarEnderecoCliente(Long id, EnderecoCliente enderecoAlterado) {
-        EnderecoCliente endereco = enderecoClienteRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Endereço não encontrado"));
 
+        EnderecoCliente endereco = enderecoClienteRepository.findById(id).get();
         endereco.setRua(enderecoAlterado.getRua());
         endereco.setNumero(enderecoAlterado.getNumero());
         endereco.setBairro(enderecoAlterado.getBairro());
@@ -140,9 +126,8 @@ public class ClienteService {
 
     @Transactional
     public void removerEnderecoCliente(Long idEndereco) {
-        EnderecoCliente endereco = enderecoClienteRepository.findById(idEndereco)
-            .orElseThrow(() -> new RuntimeException("Endereço não encontrado"));
 
+        EnderecoCliente endereco = enderecoClienteRepository.findById(idEndereco).get();
         endereco.setHabilitado(Boolean.FALSE);
         enderecoClienteRepository.save(endereco);
 
@@ -150,8 +135,20 @@ public class ClienteService {
         cliente.getEnderecos().remove(endereco);
         repository.save(cliente);
     }
-<<<<<<< HEAD
 
-=======
->>>>>>> 28ae0514b15d9e01aa1b2b6cd90e025bb364e5f1
+    public List<Cliente> filtrar(String nome, String cpf) {
+
+        List<Cliente> listaClienteCpf = repository.findAll();
+        if ((nome != null && !"".equals(nome)) &&
+                (cpf == null || "".equals(cpf))) {
+            listaClienteCpf = repository.consultarPorNome(nome);
+        } else if ((nome == null || "".equals(nome)) &&
+                (cpf != null && !"".equals(cpf))) {
+            listaClienteCpf = repository.consultarPorCpf(cpf);
+        } else if ((nome != null && !"".equals(nome)) && 
+                    (cpf != null && !"".equals(cpf))){
+            listaClienteCpf = repository.findByCpfAndNome(nome, cpf);
+        }
+        return listaClienteCpf;
+    }
 }

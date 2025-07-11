@@ -1,3 +1,4 @@
+
 package br.com.ifpe.oxefood.api.acesso;
 
 import jakarta.validation.constraints.NotBlank;
@@ -17,5 +18,5 @@ public class AuthenticationRequest {
 
     @NotBlank
     private String password;
-
+    
 }

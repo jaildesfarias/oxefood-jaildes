@@ -1,3 +1,4 @@
+
 package br.com.ifpe.oxefood.modelo.acesso;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "Usuario")
+@Table(name = "usuario")
 @SQLRestriction("habilitado = true")
 @Builder
 @Getter
@@ -31,8 +32,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Usuario extends EntidadeNegocio implements UserDetails {
-
-   private static final long serialVersionUID = 1L;  // <-- adicionado para o aviso desaparecer
 
    @Column(nullable = false, unique = true)
    private String username;
@@ -56,7 +55,6 @@ public class Usuario extends EntidadeNegocio implements UserDetails {
        return username;
    }
 
-   @Override
    public String getPassword() {
        return password;
    }
