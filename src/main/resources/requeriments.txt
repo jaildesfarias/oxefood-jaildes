@@ -1,0 +1,198 @@
+⭐Gerenciamento de Componentes⭐
+Vamos entender como o Spring gerencia os componentes de sua aplicação, facilitando a vida do desenvolvedor.
+
+@Component: Use em qualquer classe que você quer que o Spring gerencie. É como se fosse o "coringa" das anotações.
+@Service: Especializa @Component para serviços. Coloque toda a lógica de negócio aqui. Simplifica a identificação de classes de serviço.
+@Repository: Outra especialização de @Component, mas voltada para acesso a dados. É o braço direito do seu banco de dados.
+@Controller: Gerencia requisições HTTP. A base para construir aplicações web.
+⚙️Configuração e Beans⚙️
+Como configurar e gerenciar os beans, que são os componentes essenciais da sua aplicação Spring.
+
+@Configuration: Marca a classe com métodos que configuram beans. É aqui que você define como seus componentes vão se comportar.
+@Bean: Dentro de uma classe com @Configuration, use @Bean para dizer ao Spring: "Ei, gerencie esse cara aqui!".
+@PropertySource: Adiciona uma fonte de propriedades ao ambiente Spring. Facilita o uso de arquivos de configuração externos.
+@Value: Injeta valores de propriedades em campos, métodos ou parâmetros de construtor. Super útil para configurar valores de forma dinâmica.
+💉Injeção de Dependências💉
+Simplifique o gerenciamento de dependências na sua aplicação com essas anotações.
+@Autowired: Muito útil! Injeção de dependência automática. O Spring injeta os objetos necessários sem você precisar suar.
+@Qualifier: Usado junto com @Autowired para resolver ambiguidades quando há múltiplos beans do mesmo tipo. Especifica exatamente qual bean deve ser injetado.
+@Lazy: A injeção de dependências acontece de forma preguiçosa, ou seja, só quando realmente necessário. Usado para economizar recursos.
+🧙Manipulação de Requisições Web🧙
+Gerencie facilmente as requisições web no Spring.
+
+@RequestMapping: Mapeia as URLs para métodos do seu controller. Pode ser usada na classe ou no método. Essencial para roteamento.
+@GetMapping, @PostMapping, @PutMapping, @DeleteMapping: São os verbos HTTP, usados para mandar o tipo da requisição. Facilita a leitura e manutenção do código.
+@RestController: Combina @Controller e @ResponseBody. Indica que a classe lida com requisições REST e retorna dados no corpo da resposta.
+@PathVariable: Extrai variáveis da URL e passa como parâmetros para os métodos do controller. Prático para rotas dinâmicas.
+@RequestParam: Acessa parâmetros da requisição. Útil para capturar dados de requisições GET e POST.
+@RequestBody: Converte automaticamente o corpo da requisição HTTP em um objeto Java. Perfeito para APIs REST que lidam com JSON.
+@ResponseBody: Indica que o retorno de um método deve ser serializado diretamente no corpo da resposta HTTP.
+📜Tarefas e Transações📜
+Automatize tarefas e gerencie transações de forma eficiente.
+
+@Scheduled: Marca métodos para execução em intervalos regulares. Ideal para tarefas automáticas como limpeza de cache.
+@Transactional: Garante que métodos sejam executados dentro de uma transação de banco de dados. Crucial para manter a consistência dos dados.
+@Async: Permite a execução assíncrona de métodos. Super útil para operações que podem ser executadas em paralelo sem bloquear o fluxo principal.
+🔐Segurança e Validação🔐
+Implemente segurança e validação de forma prática e eficaz.
+
+@Secured: Especifica regras de segurança em métodos. Define quem pode acessar o quê.
+@PreAuthorize: Uma anotação mais poderosa que @Secured, permitindo expressões complexas para definir regras de segurança.
+@Valid: Usada para ativar a validação de beans no Spring. Garante que os dados estão corretos antes de prosseguir com a lógica de negócios.
+📞Chamadas Remotas📞
+Facilite a comunicação com serviços externos.
+
+@FeignClient: Marca uma interface como um cliente Feign, permitindo a chamada de serviços remotos de forma declarativa.
+
+@crossorigin é usada no desenvolvimento web para permitir o compartilhamento de recursos (como imagens ou APIs) entre diferentes domínios, através de uma configuração de CORS (Cross-Origin Resource Sharing). Ela é comumente utilizada no servidor para liberar esse tipo de acesso.
+
+@Data: Gera automaticamente os métodos toString(), equals(), hashCode(), além dos getters e setters para todos os campos da classe.
+
+@Builder: Cria um padrão de construção (builder) para a classe, permitindo a criação de objetos de forma fluente e legível, com a possibilidade de definir valores para os campos de forma personalizada.
+
+@NoArgsConstructor: Gera um construtor sem argumentos para a classe.
+
+@AllArgsConstructor: Gera um construtor com um argumento para cada campo da classe.
+
+@Entity: Marca a classe como uma entidade JPA (Java Persistence API), indicando que ela será mapeada para uma tabela no banco de dados.
+
+@SQLRestriction("habilitado = true"): Especifica uma restrição SQL personalizada para a entidade. No caso, filtra os resultados da consulta para retornar apenas as entidades onde o campo habilitado seja true.
+
+@Builder: Gera um padrão de construção (builder) para a classe, permitindo criar objetos de forma fluente e personalizada.
+
+@Getter: Gera automaticamente os métodos getters para todos os campos da classe.
+
+@Setter: Gera automaticamente os métodos setters para todos os campos da classe.
+
+É boa prática colocar as anotações de validação (como @NotBlank, @CPF, etc.) na classe ClienteRequest, porque elas protegem a aplicação desde a entrada.
+
+Na classe Cliente, o foco deve ser em anotações de JPA, como @Column, @ManyToOne, etc., que tratam da persistência e estrutura do banco — mas sem responsabilidade de validação de entrada da API.
+
+ Anotação	Finalidade
+@NotNull	Não permite valor null
+@NotBlank	Não permite string vazia ou com apenas espaços
+@Email	Verifica se o e-mail é válido
+@CPF	Verifica se o CPF é válido conforme regras do Brasil
+@JsonFormat	Define o padrão de formatação da data no JSON
+@Column(...)	Define propriedades da coluna no banco (nullable, length, unique)
+@ManyToOne	Relacionamento muitos-para-um com outra entidade
+@JoinColumn(...)	Define a coluna de junção (chave estrangeira) e suas propriedades
+
+ Quadro resumo com os erros mais comuns por anotação
+Anotação	Erro comum	Como resolver
+@NotNull	Valor nulo causa ConstraintViolationException	Certifique-se de que o campo está sendo preenchido no JSON enviado.
+@NotBlank	Campo preenchido com string vazia ou apenas espaços	Envie valor real e significativo (ex: "João" em vez de "" ou " ").
+@Email	Valor não é um e-mail válido (ex: joao@)	Informe e-mails no formato correto: nome@dominio.com.
+@CPF	CPF inválido (dígitos errados ou máscara incorreta)	Use CPFs válidos e, se necessário, remova pontos e traços antes.
+@JsonFormat	Data com formato incorreto (ex: "2025-07-11" em vez de "11/07/2025")	Use o padrão exato definido: "dd/MM/yyyy" no JSON.
+@Column(unique = true)	Erro de banco: ConstraintViolationException ou Duplicate entry	Verifique se o valor já existe antes de salvar (ex: CPF duplicado).
+@JoinColumn(nullable = false)	Relacionamento obrigatório não informado	Verifique se o campo relacionado (ex: usuario) está vindo no JSON.
+
+@Size(max = 30, message = "O telefone alternativo deve ter no máximo 30 caracteres")
+ Detalhes sobre a anotação @Size
+Parâmetro	Descrição
+min	(opcional) Tamanho mínimo permitido
+max	Tamanho máximo permitido
+message	Mensagem personalizada de erro
+@Entity
+public class Cliente extends EntidadeAuditavel {
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "empresa_id", nullable = false)
+    private Empresa empresa;
+
+    @Column(nullable = false, length = 100)
+    private String nome;
+
+    @Column
+    private LocalDate dataNascimento;
+
+    @Column(unique = true)
+    private String cpf;
+
+    @Column
+    private String fone;
+
+    @Column
+    private String foneAlternativo;
+
+    @OneToMany(mappedBy = "cliente", orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<EnderecoCliente> enderecos;
+
+    // Getters e Setters (ou use Lombok @Getter/@Setter/@Data)
+}
+@Entity
+public class Empresa extends EntidadeAuditavel {
+
+    @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Cliente> clientes;
+
+    @Column
+    private String site;
+
+    @Column
+    private String cnpj;
+
+    @Column
+    private String inscricaoEstadual;
+
+    @Column
+    private String nomeEmpresarial;
+
+    @Column
+    private String nomeFantasia;
+
+    @Column
+    private String fone;
+
+    @Column
+    private String foneAlternativo;
+
+    // Getters e Setters
+}
+
+@Bean
+public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
+    http
+        .httpBasic().disable()
+        .csrf().disable()
+        .cors().and()
+        .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        .and()
+        .exceptionHandling()
+            .authenticationEntryPoint(authenticationEntryPoint)
+        .and()
+        .authorizeRequests()
+
+        // Libera endpoints públicos (whitelist + consulta empresa por ID)
+        .antMatchers(AUTH_WHITELIST).permitAll()
+        .antMatchers(HttpMethod.GET, "/api/empresa/*").permitAll() // <- AQUI!
+
+        // Demais endpoints exigem autenticação com role
+        .anyRequest()
+            .hasAnyAuthority(Usuario.ROLE_CLIENTE, Usuario.ROLE_EMPRESA)
+
+        .and()
+        .addFilterBefore(
+            new JwtTokenAuthenticationFilter(jwtTokenProvider),
+            UsernamePasswordAuthenticationFilter.class
+        );
+
+    return http.build();
+}
+
+O arquivo .env é usado para armazenar variáveis de ambiente, como senhas, URLs e chaves secretas, fora do código-fonte.
+
+1.
+ Vantagens:
+Mais segurança (protege dados sensíveis)
+
+Facilidade na troca de ambiente (dev, prod)
+
+Melhor organização e manutenção
+
+É uma boa prática e geralmente não deve ser versionado com o código
+
+spring.datasource.username=${DB_USER}

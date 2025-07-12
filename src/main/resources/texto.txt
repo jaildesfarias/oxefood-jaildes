@@ -1,0 +1,117 @@
+Observando o código abaixo, responda: 
+
+“caso ocorra um erro e seja levantado alguma exceção na linha 9, os objetos inseridos nas linhas 4 e 7 serão gravados no banco de dados, pois os comandos são executados antes da linha 9.”
+
+A afirmação acima é verdadeira? Justifique sua resposta. (1,0 ponto)
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12	@Transactional
+public Cliente save(Cliente cliente) {
+
+    usuarioService.save(cliente.getUsuario());
+	
+    super.preencherCamposAuditoria(cliente);
+    Cliente clienteSalvo = repository.save(cliente);
+	
+    emailService.enviarEmailConfirmacaoCadastroCliente(clienteSalvo);
+	
+    return clienteSalvo;
+}
+é falsa ,Mesmo que os comandos nas linhas anteriores sejam executados,
+ eles só são confirmados (committed) no banco se o método terminar com sucesso (sem exceções).
+ Observando o código abaixo, responda: 
+
+“Após criada esta interface (ClienteRepository), já é possível ter acesso a métodos para consultar um cliente por id, consultar todos os clientes, incluir, alterar e remover um cliente no banco de dados.”
+
+A afirmação acima é verdadeira? Justifique sua resposta. (1,0 ponto)
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10	package br.com.ifpe.oxefood.modelo.cliente;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+
+public interface ClienteRepository extends JpaRepository<Cliente, Long>,JpaSpecificationExecutor<Cliente> {
+
+    
+}
+é verdadeira
+Com essa interface, você já pode realizar todas as operações
+ CRUD básicas no banco para a entidade Cliente sem implementar nada manualmente.
+ findById(Long id) — consulta um cliente pelo ID;
+
+findAll() — retorna todos os clientes;
+
+save(Cliente cliente) — inclui um novo cliente ou atualiza um existente;
+
+delete(Cliente cliente) — remove um cliente do banco.
+
+
+O método do repository não pode usar campos que não existem na entidade, caso contrário o Spring Data JPA vai lançar erro de criação do bean,
+ porque não consegue montar a query automaticamente.
+
+ ) O código abaixo funciona? Se não funcionar, explique o porquê. (0,5 ponto)
+
+1
+2
+3
+4
+5	public interface CategoriaProdutoRepository extends JpaRepository<CategoriaProduto, Long> {
+
+    List<CategoriaProduto> findByChaveEmpresaOrderByNome(String chaveEmpresa);
+
+}
+O código não funciona, pois o método findByChaveEmpresaOrderByNome tenta buscar por um campo chamado 
+ que não existe na entidade CategoriaProduto.
+ O código não funciona, pois o método findByChaveEmpresaOrderByNome tenta buscar por um campo chamado chaveEmpresa que não existe na entidade CategoriaProduto.
+
+ O código abaixo funciona? Se não funcionar, explique o porquê. (0,5 ponto)
+
+1
+2
+3
+4
+5	public interface CategoriaProdutoRepository extends JpaRepository<CategoriaProduto, Long> {
+
+    List<CategoriaProduto> findByChaveEmpresaOrderByDescricao();
+
+
+}O código não funciona por dois motivos
+Campo inexistente:
+Sintaxe incorreta no OrderBy
+O método falha porque tenta filtrar por um campo que não existe e porque
+ falta indicar a direção da ordenação no OrderBy.
+
+ Na aula de controle de acesso do projeto do front-end, implementamos um componente para restringir o acesso não autenticado às telas do sistema, posteriormente esse componente foi adicionado em cada definição <Route> no arquivo Rotas.js. 
+ Qual foi o componente criado e como ele foi utilizado no arquivo Rotas.js 
+
+ O componente RotaPrivada envolve a rota que precisa de autenticação.
+
+Ele garante que somente usuários autenticados possam acessar.
+
+Caso contrário, redireciona para login.
+
+O que é uma API WEB considerada RESTful? 
+
+Uma API RESTful é um serviço na web que disponibiliza informações ou funcionalidades através de 
+endereços (URLs). Ela utiliza os métodos padrão do protocolo HTTP para acessar e modificar esses
+ recursos, não guarda informações da sessão entre pedidos feitos pelo cliente e segue regras 
+ abertas para garantir que diferentes sistemas possam se comunicar facilmente.

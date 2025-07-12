@@ -1,0 +1,21 @@
+#cadastrar cliente
+{
+        "nome": "jaildesFarias",
+        "dataNascimento": "21/02/2002",
+        "cpf": "142.355.274-10",
+        "foneCelular": "(81) 9999.9999",
+        "foneFixo": "(81) 9888.4444"
+    }
+
+#cadastrar endereços
+{
+  "endereco": "Rua.: Margaridas",
+  "numero": "25",
+  "bairro": "Cajueiro Seco",
+  "cep": "54250-000",
+  "cidade": "Jaboatao dos Guararapes",
+  "uf": "PE",
+  "cliente": {
+    "id": 103
+  }
+}
