@@ -114,4 +114,4 @@ O que é uma API WEB considerada RESTful?
 Uma API RESTful é um serviço na web que disponibiliza informações ou funcionalidades através de 
 endereços (URLs). Ela utiliza os métodos padrão do protocolo HTTP para acessar e modificar esses
  recursos, não guarda informações da sessão entre pedidos feitos pelo cliente e segue regras 
- abertas para garantir que diferentes sistemas possam se comunicar facilmente.
+ git UsernamePasswordAuthenticationFilterabertas para garantir que diferentes sistemas possam se comunicar facilmente.
