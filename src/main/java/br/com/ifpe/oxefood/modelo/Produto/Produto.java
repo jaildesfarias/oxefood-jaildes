@@ -1,7 +1,7 @@
 package br.com.ifpe.oxefood.modelo.produto;
 import org.hibernate.annotations.SQLRestriction;
 
-import br.com.ifpe.oxefood.modelo.categoriaProduto.CategoriaProduto;
+import br.com.ifpe.oxefood.api.categoriaProduto.CategoriaProdutoController;
 import br.com.ifpe.oxefood.util.entity.EntidadeAuditavel;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,7 +24,7 @@ import lombok.Setter;
 public class Produto extends EntidadeAuditavel {
     
     @ManyToOne 
-    private CategoriaProduto categoria;
+    private CategoriaProdutoController categoria;
 
     @Column (nullable = false)
     private String codigo;
@@ -43,4 +43,8 @@ public class Produto extends EntidadeAuditavel {
 
     @Column
     private Integer tempoEntregaMaximo;
+
+    void setHabilitado(Boolean FALSE) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

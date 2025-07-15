@@ -1,4 +1,3 @@
-
 package br.com.ifpe.oxefood.api.acesso;
 
 import jakarta.validation.constraints.NotBlank;

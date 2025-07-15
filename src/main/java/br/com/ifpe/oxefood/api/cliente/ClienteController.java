@@ -1,6 +1,7 @@
 package br.com.ifpe.oxefood.api.cliente;
 
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,137 +13,76 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import br.com.ifpe.oxefood.modelo.acesso.UsuarioService;
 import br.com.ifpe.oxefood.modelo.cliente.Cliente;
 import br.com.ifpe.oxefood.modelo.cliente.ClienteService;
-import br.com.ifpe.oxefood.modelo.cliente.EnderecoCliente;
-import br.com.ifpe.oxefood.modelo.produto.Produto;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
 
-@RestController
-@RequestMapping("/api/cliente")
-@CrossOrigin
+@RestController // O que faz essa class ser controlador é o (@RestController)
+@RequestMapping("/api/cliente") // Indica o endereço do controlador para rodar na tela.
+@CrossOrigin // Para receber requisições do react
 @Tag(
     name = "API Cliente",
-    description = "API responsável pelos serviços de cliente no sistema"
+    description = "API responsável pelos servidos de cliente no sistema"
 )
+
+
+
 public class ClienteController {
-    @Autowired
-    private ClienteService clienteService;
 
     @Autowired
     private UsuarioService usuarioService;
 
-    @Operation(
-        summary = "Serviço responsável por salvar um cliente no sistema.",
-        description = "api/cliente"
-    ) 
-    @PostMapping
-    public ResponseEntity<Cliente> save(@RequestBody @Valid ClienteRequest clienteRequest, HttpServletRequest request) {
-        Cliente cliente = clienteService.save(clienteRequest.build(), usuarioService.obterUsuarioLogado(request));
-        return new ResponseEntity<Cliente>(cliente, HttpStatus.CREATED);
-    }
+    @Autowired // estânciar um objeto
+  private ClienteService clienteService;
+
 
     @Operation(
-        summary = "Serviço responsável por pegar os dados de todos os clientes no sistema.",
-        description = "api/cliente"
-    )
- 
-    @GetMapping
-    public List<Cliente> listarTodos() {
-        return clienteService.listarTodos();
-    }
+       summary = "Serviço responsável por salvar um cliente no sistema.",
+       description = "Exemplo de descrição de um endpoint responsável por inserir um cliente no sistema."
+   )
+  @PostMapping // especificar que vai receber requisições do post
+  public ResponseEntity<Cliente> save(@RequestBody  @Valid ClienteRequest clienterequest, HttpServletRequest request) {
+
+    Cliente cliente = clienteService.save(clienterequest.build(), null);
+    return new ResponseEntity<Cliente>(cliente, HttpStatus.CREATED);
+
+  }
+
+  @GetMapping
+  public List<Cliente> listarTodos() {
+    return clienteService.listarTodos();
+  }
+
+  @GetMapping("/{id}")
+  public Cliente obterPorID(@PathVariable Long id) {
+    return clienteService.obterPorID(id);
+  }
+
+   @Operation(
+       summary = "Serviço responsável por alterar um cliente no sistema.",
+       description = "Exemplo de descrição de um endpoint responsável por inserir um produto no sistema."
+   )
+  @PutMapping("/{id}")
+  public ResponseEntity<Cliente> update(@PathVariable("id") Long id, @RequestBody  @Valid ClienteRequest clienteRequest, HttpServletRequest request) {
+
+    clienteService.update(id, clienteRequest.build(), null);
+    return ResponseEntity.ok().build();
+  }
 
     @Operation(
-        summary = "Serviço responsável por pegar os dados de um cliente no sistema.",
-        description = "api/cliente/id"
-    ) 
-    @GetMapping("/{id}")
-    public Cliente obterPorID(@PathVariable Long id) {
-        return clienteService.obterPorID(id);
-    }
-
-    @Operation(
-        summary = "Serviço responsável por editar um cliente no sistema.",
-        description = "api/cliente/id"
-    )
-    @PutMapping("/{id}")
-    public ResponseEntity<Cliente> update(@PathVariable("id") Long id,
-            @RequestBody @Valid ClienteRequest clienteRequest, HttpServletRequest request) {
-        clienteService.update(id, clienteRequest.build(), usuarioService.obterUsuarioLogado(request));
-        return ResponseEntity.ok().build();
-    }
-
-    @Operation(
-        summary = "Serviço responsável por deletar um cliente no sistema.",
-        description = "api/cliente/id"
-    )
+       summary = "Serviço responsável por deletar um cliente no sistema.",
+       description = "Exemplo de descrição de um endpoint responsável por inserir um produto no sistema."
+   )
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        clienteService.delete(id);
-        return ResponseEntity.ok().build();
-    }
+   public ResponseEntity<Void> delete(@PathVariable Long id) {
 
-    @Operation(
-        summary = "Serviço responsável por pegar todos os endereços de um cliente no sistema.",
-        description = "api/cliente/endereco/clienteid"
-    )
-    // endereço
-    @GetMapping("/endereco/{clienteId}")
-    public EnderecoCliente obterEnderecoPorID(@PathVariable("clienteId") Long clienteId) {
-        return clienteService.obterEnderecoPorID(clienteId);
-    }
-    
-    @Operation(
-        summary = "Serviço responsável por cadastrar endereço vinculado a um cliente no sistema.",
-        description = "api/cliente/endereco/clienteid"
-    )
-    @PostMapping("/endereco/{clienteId}")
-    public ResponseEntity<EnderecoCliente> adicionarEnderecoCliente(@PathVariable("clienteId") Long clienteId,
-            @RequestBody @Valid EnderecoClienteRequest request) {
-
-        EnderecoCliente endereco = clienteService.adicionarEnderecoCliente(clienteId, request.build());
-        return new ResponseEntity<EnderecoCliente>(endereco, HttpStatus.CREATED);
-    }
-
-    @Operation(
-        summary = "Serviço responsável por editar um endereço específico",
-        description = "api/cliente/endereco/enderecoid"
-    )
-    @PutMapping("/endereco/{enderecoId}")
-    public ResponseEntity<EnderecoCliente> atualizarEnderecoCliente(@PathVariable("enderecoId") Long enderecoId,
-            @RequestBody EnderecoClienteRequest request) {
-
-        EnderecoCliente endereco = clienteService.atualizarEnderecoCliente(enderecoId, request.build());
-        return new ResponseEntity<EnderecoCliente>(endereco, HttpStatus.OK);
-    }
-
-    @Operation(
-        summary = "Serviço responsável por delatar um endereço específico",
-        description = "api/cliente/endereco/enderecoid"
-    )
-    @DeleteMapping("/endereco/{enderecoId}")
-    public ResponseEntity<Void> removerEnderecoCliente(@PathVariable("enderecoId") Long enderecoId) {
-
-        clienteService.removerEnderecoCliente(enderecoId);
-        return ResponseEntity.noContent().build();
-    }
-
-    @Operation(
-        summary = "Serviço responsável por filtrar dados por cliente ou cpf",
-        description = "api/cliente/filtrar/"
-    )
-    @PostMapping("/filtrar")
-    public List<Cliente> filtrar(
-            @RequestParam(value = "nome", required = false) String nome,
-            @RequestParam(value = "cpf", required = false) String cpf) {
-
-        return clienteService.filtrar(nome, cpf);
-    }
+       clienteService.delete(id);
+       return ResponseEntity.ok().build();
+   }
 
 }

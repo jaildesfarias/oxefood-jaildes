@@ -1,9 +1,11 @@
 package br.com.ifpe.oxefood.modelo.Perfil;
 
+import org.hibernate.annotations.SQLRestriction;
 import org.springframework.security.core.GrantedAuthority;
 
 import br.com.ifpe.oxefood.util.entity.EntidadeNegocio;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

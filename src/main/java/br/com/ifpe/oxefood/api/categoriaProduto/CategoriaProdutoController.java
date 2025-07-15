@@ -1,4 +1,4 @@
-package br.com.ifpe.oxefood.api.categoriaProduto;
+package br.com.ifpe.oxefood.api.categoriaproduto;
 
 import java.util.List;
 
@@ -19,27 +19,18 @@ import br.com.ifpe.oxefood.modelo.categoriaProduto.CategoriaProduto;
 import br.com.ifpe.oxefood.modelo.categoriaProduto.CategoriaProdutoService;
 import jakarta.validation.Valid;
 
-@RestController 
-
-@RequestMapping("/api/categoriaproduto") 
-
-@RequestMapping("/api/categoriaProduto") 
-
-@CrossOrigin
+@RestController // Define esta classe como um controlador REST
+@RequestMapping("/api/categoriaproduto") // Define o endpoint base para os métodos deste controlador
+@CrossOrigin // Permite requisições de outros domínios (como o React)
 public class CategoriaProdutoController {
 
-    @Autowired 
+    @Autowired // Injeta automaticamente uma instância do service
     private CategoriaProdutoService categoriaProdutoService;
 
-    @PostMapping 
+    @PostMapping
     public ResponseEntity<CategoriaProduto> save(@RequestBody @Valid CategoriaProdutoRequest request) {
-
         CategoriaProduto categoriaProduto = categoriaProdutoService.save(request.build());
- 
         return new ResponseEntity<CategoriaProduto>(categoriaProduto, HttpStatus.CREATED);
-        
-        return new ResponseEntity<>(categoriaProduto, HttpStatus.CREATED);
-
     }
 
     @GetMapping
@@ -54,17 +45,14 @@ public class CategoriaProdutoController {
 
     @PutMapping("/{id}")
     public ResponseEntity<CategoriaProduto> update(@PathVariable("id") Long id,
-            @RequestBody CategoriaProdutoRequest request) { // Recebe o id e os dados do cliente
-
-        categoriaProdutoService.update(id, request.build()); // Objeto preenchido sera enviado para o service
+                                                   @RequestBody @Valid CategoriaProdutoRequest request) {
+        categoriaProdutoService.update(id, request.build());
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{id}") // passar o id do cliente que eu quero remover
-    public ResponseEntity<Void> delete(@PathVariable Long id) { // repassar o id para a função delete
-
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         categoriaProdutoService.delete(id);
         return ResponseEntity.ok().build();
     }
-
 }
