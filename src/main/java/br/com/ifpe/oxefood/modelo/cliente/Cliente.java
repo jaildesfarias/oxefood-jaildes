@@ -31,6 +31,10 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Cliente extends EntidadeAuditavel  {
+
+    public static Object builder() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
     
    @OneToOne
    @JoinColumn(nullable = false)
@@ -55,3 +59,4 @@ public class Cliente extends EntidadeAuditavel  {
    @Column
    private String foneFixo;
 }
+

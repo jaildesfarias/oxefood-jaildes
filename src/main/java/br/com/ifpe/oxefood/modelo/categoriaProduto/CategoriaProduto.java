@@ -1,46 +1,20 @@
 package br.com.ifpe.oxefood.modelo.categoriaProduto;
 
-import java.util.List;
-import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import br.com.ifpe.oxefood.util.entity.EntidadeNegocio;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
-@Service
-public class CategoriaProdutoService {
+@Entity
+@Table(name = "CategoriaProduto")
+public class CategoriaProduto extends EntidadeNegocio {
 
-    @Autowired
-    private CategoriaProdutoRepository repository;
+    private String descricao;
 
-    @Transactional
-    public CategoriaProduto save(CategoriaProduto categoriaProduto) {
-        categoriaProduto.setHabilitado(Boolean.TRUE);
-        return repository.save(categoriaProduto);
+    public String getDescricao() {
+        return descricao;
     }
 
-    public List<CategoriaProduto> listarTodos() {
-        return repository.findByHabilitadoTrue();
-    }
-
-    public CategoriaProduto obterPorID(Long id) {
-        return repository.findById(id)
-            .orElseThrow(() -> new RuntimeException("CategoriaProduto não encontrada para o ID: " + id));
-    }
-
-    @Transactional
-    public void update(Long id, CategoriaProduto categoriaProdutoAlterada) {
-        CategoriaProduto categoriaProduto = repository.findById(id)
-            .orElseThrow(() -> new RuntimeException("CategoriaProduto não encontrada para o ID: " + id));
-
-        categoriaProduto.setDescricao(categoriaProdutoAlterada.getDescricao());
-        // repository.save(categoriaProduto); // opcional
-    }
-
-    @Transactional
-    public void delete(Long id) {
-        CategoriaProduto categoriaProduto = repository.findById(id)
-            .orElseThrow(() -> new RuntimeException("CategoriaProduto não encontrada para o ID: " + id));
-
-        categoriaProduto.setHabilitado(Boolean.FALSE);
-        // repository.save(categoriaProduto); // opcional
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
     }
 }

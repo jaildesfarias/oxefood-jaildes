@@ -1,4 +1,4 @@
-package br.com.ifpe.oxefood.modelo.acesso;
+package br.com.ifpe.oxefood.modelo.usuario;
 
 import java.util.Optional;
 

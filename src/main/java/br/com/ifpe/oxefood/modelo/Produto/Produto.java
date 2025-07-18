@@ -47,4 +47,5 @@ public class Produto extends EntidadeAuditavel {
     void setHabilitado(Boolean FALSE) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-}
+
+    }

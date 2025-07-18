@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import br.com.ifpe.oxefood.modelo.acesso.UsuarioRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 
@@ -19,17 +18,22 @@ public class UsuarioService implements UserDetailsService {
     @Autowired
     private UsuarioRepository repository;
 
-    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private JwtService jwtService;
 
+    private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
 
-    public UsuarioService(UsuarioRepository userRepository, AuthenticationManager authenticationManager,
-            PasswordEncoder passwordEncoder) {
+    public UsuarioService(UsuarioRepository userRepository,
+                          AuthenticationManager authenticationManager,
+                          PasswordEncoder passwordEncoder) {
 
-        this.authenticationManager = authenticationManager;
         this.repository = userRepository;
+        this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
- public Usuario authenticate(String username, String password) {
+    }
+
+    public Usuario authenticate(String username, String password) {
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(username, password));
@@ -55,24 +59,19 @@ public class UsuarioService implements UserDetailsService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setHabilitado(Boolean.TRUE);
         return repository.save(user);
-          @Autowired
-    private JwtService jwtService;
-
     }
-      public Usuario obterUsuarioLogado(HttpServletRequest request) {
+
+    public Usuario obterUsuarioLogado(HttpServletRequest request) {
 
         Usuario usuarioLogado = null;
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader != null) {
-
             String jwt = authHeader.substring(7);
             String userEmail = jwtService.extractUsername(jwt);
             usuarioLogado = findByUsername(userEmail);
-            return usuarioLogado;
         }
 
         return usuarioLogado;
     }
-
 }

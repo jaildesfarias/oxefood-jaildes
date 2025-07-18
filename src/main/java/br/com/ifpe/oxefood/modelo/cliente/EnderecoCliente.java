@@ -1,5 +1,6 @@
 package br.com.ifpe.oxefood.modelo.cliente;
-import org.hibernate.annotations.SQLRestriction;
+
+import org.hibernate.annotations.Where;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -16,14 +17,14 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "enderecoCliente")
-@SQLRestriction("habilitado = true")
+@Where(clause = "habilitado = true")
 @Builder
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class EnderecoCliente extends EntidadeAuditavel {
-     
+
    @JsonIgnore
    @ManyToOne
    private Cliente cliente;
@@ -48,5 +49,4 @@ public class EnderecoCliente extends EntidadeAuditavel {
 
    @Column
    private String complemento;
-
 }
