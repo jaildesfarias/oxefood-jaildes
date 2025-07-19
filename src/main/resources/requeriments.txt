@@ -185,6 +185,9 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
 O arquivo .env é usado para armazenar variáveis de ambiente, como senhas, URLs e chaves secretas, fora do código-fonte.
 
+
+
+
 1.
  Vantagens:
 Mais segurança (protege dados sensíveis)

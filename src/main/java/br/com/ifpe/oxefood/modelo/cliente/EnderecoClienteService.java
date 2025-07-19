@@ -48,4 +48,19 @@ public class EnderecoClienteService {
         EnderecoCliente endereco = obterPorId(id);
         repository.delete(endereco);
     }
+
+    public void update(Long id, EnderecoCliente enderecoAlterado) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'update'");
+    }
+
+    public void delete(Long id) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'delete'");
+    }
+
+    public List<EnderecoCliente> buscarPorCliente(Long idCliente) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'buscarPorCliente'");
+    }
 }

@@ -1,0 +1,353 @@
+public class Cliente extends EntidadeAuditavel {
+
+    @Column(nullable = false, length = 100)
+    private String nome;
+
+    @Column
+    private LocalDate dataNascimento;
+
+    @Column(unique = true)
+    private String cpf;
+
+    @Column
+    private String fone;
+
+    @Column
+    private String foneAlternativo;
+
+    @OneToMany(mappedBy = "cliente", orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<EnderecoCliente> enderecos;
+
+    @ManyToOne
+    @JoinColumn(name = "empresa_id", nullable = false) // Chave estrangeira para a tabela Empresa
+    private Empresa empresa;
+
+    // Getters e Setters
+    public Empresa getEmpresa() {
+        return empresa;
+    }
+
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
+    }
+
+    // Outros Getters e Setters omitidos para clareza
+}
+Classe Empresa
+Nesta classe, adicionamos o relacionamento com a classe Cliente usando a anotação @OneToMany para indicar que uma empresa possui uma lista de clientes. O atributo mappedBy aponta para o campo empresa em Cliente.
+
+java
+Copiar código
+public class Empresa extends EntidadeAuditavel {
+
+    @Column
+    private String site;
+
+    @Column
+    private String cnpj;
+
+    @Column
+    private String inscricaoEstadual;
+
+    @Column
+    private String nomeEmpresarial;
+
+    @Column
+    private String nomeFantasia;
+
+    @Column
+    private String fone;
+
+    @Column
+    private String foneAlternativo;
+
+    @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Cliente> clientes = new ArrayList<>();
+
+    // Getters e Setters
+    public List<Cliente> getClientes() {
+        return clientes;
+    }
+
+    public void setClientes(List<Cliente> clientes) {
+        this.clientes = clientes;
+    }
+
+    // Adiciona um cliente à empresa
+    public void addCliente(Cliente cliente) {
+        clientes.add(cliente);
+        cliente.setEmpresa(this); // Configura a relação bidirecional
+    }
+
+    // Remove um cliente da empresa
+    public void removeCliente(Cliente cliente) {
+        clientes.remove(cliente);
+        cliente.setEmpresa(null); // Remove a relação bidirecional
+    }
+
+    // Outros Getters e Setters omitidos para clareza
+}
+public class Empresa extends EntidadeAuditavel {
+
+    @Column
+    private String site;
+
+    @Column
+    private String cnpj;
+
+    @Column
+    private String inscricaoEstadual;
+
+    @Column
+    private String nomeEmpresarial;
+
+    @Column
+    private String nomeFantasia;
+
+    @Column
+    private String fone;
+
+    @Column
+    private String foneAlternativo;
+
+    @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Cliente> clientes = new ArrayList<>();
+
+    // Getters e Setters
+    public List<Cliente> getClientes() {
+        return clientes;
+    }
+
+    public void setClientes(List<Cliente> clientes) {
+        this.clientes = clientes;
+    }
+
+    // Método para adicionar cliente e sincronizar a relação
+    public void addCliente(Cliente cliente) {
+        clientes.add(cliente);
+        cliente.setEmpresa(this);
+    }
+
+    // Método para remover cliente e sincronizar a relação
+    public void removeCliente(Cliente cliente) {
+        clientes.remove(cliente);
+        cliente.setEmpresa(null);
+    }
+}  . Alterações na classe Empresa
+
+Adicionar um atributo para representar a lista de clientes usando a anotação @OneToMany.
+Usar o mappedBy para definir o lado inverso da relação.
+Implementar métodos utilitários para adicionar ou remover clientes na lista,
+ mantendo a relação bidirecional sincronizada.
+
+ [21:53, 10/01/2025] Jaildes Farias: A resposta completa para implementar o relacionamento "um para muitos" bidirecional entre as classes Cliente e Empresa seria:
+
+1. Alterações na classe Cliente
+
+Adicionar um atributo para representar o relacionamento com a entidade Empresa usando a anotação @ManyToOne.
+Configurar a chave estrangeira no banco de dados com @JoinColumn.
+Código da classe Cliente:
+
+java
+Copiar código
+public class Cliente extends EntidadeAuditavel {
+
+    @Column(nullable = false, length = 100)
+    private String nome;
+
+    @Column
+    private LocalDate dataNascimento;
+
+    @Column(unique = true)
+    private String cpf;
+
+    @Column
+    private String fone;
+
+    @Column
+    private String foneAlternativo;
+
+    @OneToMany(mappedBy = "cliente", orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<EnderecoCliente> enderecos;
+
+    @ManyToOne
+    @JoinColumn(name = "empresa_id", nullable = false) // Configuração da chave estrangeira
+    private Empresa empresa;
+
+    // Getters e Setters
+    public Empresa getEmpresa() {
+        return empresa;
+    }
+
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
+    }
+}
+2. Alterações na classe Empresa
+
+Adicionar um atributo para representar a lista de clientes usando a anotação @OneToMany.
+Usar o mappedBy para definir o lado inverso da relação.
+Implementar métodos utilitários para adicionar ou remover clientes na lista, mantendo a relação bidirecional sincronizada.
+Código da classe Empresa:
+
+java
+Copiar código
+public class Empresa extends EntidadeAuditavel {
+
+    @Column
+    private String site;
+
+    @Column
+    private String cnpj;
+
+    @Column
+    private String inscricaoEstadual;
+
+    @Column
+    private String nomeEmpresarial;
+
+    @Column
+    private String nomeFantasia;
+
+    @Column
+    private String fone;
+
+    @Column
+    private String foneAlternativo;
+
+    @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Cliente> clientes = new ArrayList<>();
+
+    // Getters e Setters
+    public List<Cliente> getClientes() {
+        return clientes;
+    }
+
+    public void setClientes(List<Cliente> clientes) {
+        this.clientes = clientes;
+    }
+
+    // Método para adicionar cliente e sincronizar a relação
+    public void addCliente(Cliente cliente) {
+        clientes.add(cliente);
+        cliente.setEmpresa(this);
+    }
+
+    // Método para remover cliente e sincronizar a relação
+    public void removeCliente(Cliente cliente) {
+        clientes.remove(cliente);
+        cliente.setEmpresa(null);
+    }
+}
+Explicação da implementação
+Classe Cliente:
+
+Cada cliente está associado a uma empresa por meio do atributo empresa.
+A relação é representada por @ManyToOne, e a chave estrangeira é configurada com @JoinColumn.
+Classe Empresa:
+
+Cada empresa possui uma lista de clientes.
+A relação é representada por @OneToMany, e o atributo mappedBy indica que a propriedade empresa em Cliente é o lado proprietário da relação.
+Sincronização bidirecional:
+
+Métodos addCliente e removeCliente na classe Empresa garantem que a relação seja mantida coerente em ambas as classes (Empresa e Cliente).
+Resumo da resposta
+O relacionamento "um para muitos" bidirecional foi implementado utilizando:
+
+@ManyToOne na classe Cliente para indicar que cada cliente pertence a uma empresa.
+@OneToMany na classe Empresa para indicar que uma empresa possui uma lista de clientes.
+Configuração do atributo mappedBy e uso de métodos utilitários para manter a relação sincronizada.
+Isso atende à necessidade de modelar o relacionamento entre empresas e clientes, refletindo corretamente a estrutura do banco de dados e garantindo consistência nas operaçõe
+[19:49, 12/01/2025] Jaildes Farias: @Bean
+public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
+    http
+            .httpBasic().disable()
+            .csrf().disable()
+            .cors().and()
+            .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+            .exceptionHandling()
+            .authenticationEntryPoint(authenticationEntryPoint).and()
+            .authorizeRequests()
+
+            // Permitir acesso público ao endpoint de consulta de empresa por ID
+            .antMatchers("/api/empresas/{id}").permitAll()
+
+            // Outros endpoints liberados
+            .antMatchers(AUTH_WHITELIST).permitAll()
+
+            // Qualquer outra requisição deve ter autoridade
+            .anyRequest()
+            .has…
+[19:51, 12/01/2025] Jaildes Farias:
+ Para permitir acesso público ao endpoint que consulta uma empresa por ID,
+  é necessário modificar o método filterChain no SecurityFilterChain para adicionar a 
+  URL correspondente ao endpoint na lista de caminhos permitidos (permitAll). Isso pode ser feito utilizando o método .antMatchers().
+
+
+Aqui está o código modificado:
+[19:51, 12/01/2025] Jaildes Farias: Explicação das alterações
+Liberar acesso público ao endpoint de consulta de empresa por ID:
+
+Foi adicionada a linha .antMatchers("/api/empresas/{id}").permitAll().
+Essa linha indica que o endpoint /api/empresas/{id} pode ser acessado sem autenticação.
+Permissão específica para o endpoint:
+
+Substitua "/api/empresas/{id}" pelo caminho exato do endpoint caso seja diferente. Por exemplo,
+ se o endpoint for /api/empresa/{id}, ajuste o valor na regra.
+Ordem das regras de segurança:
+
+No Spring Security, as regras são avaliadas na ordem em que são declaradas. Portanto, 
+é essencial que a regra permitAll seja definida antes da regra .anyRequest().
+Considerações finais
+Com essas alterações, o endpoint que consulta uma empresa por ID estará acessível publicamente, sem exigir autenticação.
+ Isso é útil para casos em que informações da empresa precisam ser consultadas por usuários não autenticados.
+[20:27, 12/01/2025] Jaildes Farias: No contexto de Controle de Acesso, os conceitos de autenticação, autorização e auditoria são fundamentais,
+ mas possuem objetivos e funcionalidades distintas. Aqui está a explicação detalhada:
+
+1. Autenticação
+A autenticação é o processo de verificar a identidade de um usuário ou sistema.
+
+Objetivo: Garantir que quem está tentando acessar o sistema é, de fato, quem diz ser.
+Como funciona:
+O usuário fornece credenciais como login e senha, token, biometria, ou outro fator de
+ autenticação.
+O sistema valida essas credenciais contra uma base de dados ou serviço de autenticação.
+Exemplo:
+Um usuário insere um e-mail e senha no sistema. O sistema verifica se as informações são válidas e permite o acesso.
+2. Autorização
+A autorização ocorre após a autenticação e é o proce…
+[20:28, 12/01/2025] 
+Jaildes Farias: Resumo das Diferenças
+Aspecto	Autenticação	Autorização	Auditoria
+O que verifica?	A identidade do usuário	O que o usuário pode fazer	O que o usuário fez
+Objetivo	Garantir que o usuário é quem diz ser	Controlar o acesso a recursos
+	Rastrear ações realizadas para segurança e análise
+Quando ocorre?	Antes de conceder acesso ao sistema	Após a autenticação	Durante ou após as operações realizadas pelo usuário
+Exemplo	Login com e-mail e senha	Permitir acesso a um painel administrativo	Registrar que o usuário alterou um dado às 10:00 AM
+[21:14, 12/01/2025] Jaildes Farias: <dependency>
+    <groupId>io.github.cdimascio</groupId>
+    <artifactId>dotenv-java</artifactId>
+    <version>5.2.2</version>
+</dependency>
+[21:15, 12/01/2025] Jaildes Farias: Carregar as variáveis do arquivo .env no código Java, geralmente no início da aplicação:
+java
+Copiar código
+import io.github.cdimascio.dotenv.Dotenv;
+
+public class MyApp {
+    public static void main(String[] args) {
+        // Carregar o arquivo .env
+        Dotenv dotenv = Dotenv.configure().load();
+
+        // Exemplo de uso de variável de ambiente
+        String dbUrl = dotenv.get("DB_URL");
+        System.out.println(dbUrl);
+    }
+}
+Com isso, as variáveis definidas no arquivo .env estarão acessíveis no seu projeto Spring, e você pode usá-las como variáveis de ambiente em qualquer parte do código, garantindo que o Spring use as configurações corretamente.
+
+Nota: Após adicionar a dependência e a configuração, o arquivo .env deve estar na raiz do seu projeto, e você pode referenciar as variáveis usando dotenv.get("NOME_VARIAVEL").
+[21:17, 12/01/2025] Jaildes Farias: O que é uma API WEB considerada RESTful?
+[21:17, 12/01/2025] Jaildes Farias: Uma API Web RESTful é uma interface que segue os princípios da arquitetura REST (Representational State Transfer), utilizando métodos HTTP (GET, POST, PUT, DELETE) para realizar operações sobre recursos identificados por URIs. Ela é stateless (não mantém estado entre requisições) e normalmente utiliza formatos como JSON ou XML para representar os dados. Uma API RESTful é simples, escalável e permite a interação entre diferentes plataformas e dispositivo
