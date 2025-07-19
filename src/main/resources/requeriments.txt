@@ -199,3 +199,28 @@ Melhor organização e manutenção
 É uma boa prática e geralmente não deve ser versionado com o código
 
 spring.datasource.username=${DB_USER}
+
+O Swagger é um projeto open source que contempla diversas ferramentas para documentação, 
+consumo e visualização de serviços RESTful, entre essas ferramentas, temos o framework para documentação legível de APIs, esse framework implementa a especificação OpenAPI,
+ que é uma linguagem para descrição de contratos de APIs REST. 
+
+ Properties props = mailSender.getJavaMailProperties();
+A linha acima acessa as propriedades JavaMail, onde você adiciona os parâmetros:
+
+🔑 Principais Parâmetros
+Parâmetro	Significado
+mail.transport.protocol = smtp	Define que o protocolo de envio é SMTP (protocolo padrão de envio de e-mail).
+mail.smtp.auth = true	Indica que é necessário autenticar no servidor de e-mail (login/senha).
+mail.smtp.starttls.enable = true	Ativa o STARTTLS, que permite criptografia do envio.
+mail.debug = false	Define se deve mostrar logs detalhados do envio no console.
+spring.mail.properties.mail.smtp.starttls.enable = true	Redundância específica do 
+
+Spring Boot para garantir que STARTTLS esteja ativado.
+ Para que servem?
+Esses parâmetros garantem que o sistema possa:
+
+Autenticar com segurança no servidor de e-mail;
+
+Usar conexão segura (criptografada);
+
+Enviar mensagens corretamente, com controle sobre erros e segurança.
