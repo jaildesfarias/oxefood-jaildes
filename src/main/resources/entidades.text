@@ -1,0 +1,160 @@
+	
+Empresa	
+site	String
+cnpj	String
+inscricaoEstadual	String
+nomeEmpresarial	String
+nomeFantasia	String
+fone	String
+foneAlternativo	String
+	
+Usuario	
+username	String
+password	String
+roles	List<String>
+	
+CategoriaProduto	
+descricao	String
+	
+Produto	
+empresa	Empresa
+categoria	CategoriaProduto
+codigo	String
+titulo	String
+descricao	String
+valorUnitario	Double
+tempoEntregaMinimo	Integer
+tempoEntregaMaximo	Integer
+	
+Entregador	
+empresa	Empresa
+nome	String
+cpf	String
+rg	String
+dataNascimento	LocalDate
+foneCelular	String
+foneFixo	String
+qtdEntregasRealizadas	Integer
+valorFrete	Double
+enderecoRua	String
+enderecoComplemento	String
+enderecoNumero	String
+enderecoBairro	String
+enderecoCidade	String
+enderecoCep	String
+enderecoUf	String
+ativo	Boolean
+	
+Cliente	
+usuario	Usuario
+enderecos	List<EnderecoCliente>
+nome	String
+dataNascimento	LocalDate
+cpf	String
+foneCelular	String
+foneFixo	String
+	
+EnderecoCliente	
+cliente	Cliente
+rua	String
+numero	String
+bairro	String
+cep	String
+cidade	String
+estado	String
+complemento	String
+	
+TipoFuncionario	
+descricao	String
+	
+Funcionario	
+usuario	Usuario
+empresa	Empresa
+tipo	TipoFuncionario
+nome	String
+cpf	String
+rg	String
+dataNascimento	LocalDate
+foneCelular	String
+foneFixo	String
+salario	Double
+enderecoRua	String
+enderecoNumero	String
+enderecoBairro	String
+enderecoCidade	String
+enderecoCep	String
+enderecoUf	String
+enderecoComplemento	String
+	
+Pedido	
+empresa	Empresa
+cliente	Cliente
+statusPedido	StatusPedido <ENUM>
+statusPagamento	StatusPagamento  <ENUM>
+formaPagamento	FormaPagamento  <ENUM>
+itens	List<ItemPedido>
+dataHora	LocalDateTime
+valorTotal	Double
+taxaEntrega	Double
+observacaoGeral	String
+retiradaEmLoja	boolean
+enderecoEntregaRua	String
+enderecoEntregaNumero	String
+enderecoEntregaBairro	String
+enderecoEntregaCep	String
+enderecoEntregaCidade	String
+enderecoEntregaEstado	String
+enderecoEntregaComplemento	String
+	
+ItemPedido	
+pedido	Pedido
+produto	Produto
+quantidade	int
+valorUnitarioItem	double
+valorTotalItem	double
+observacaoItem	String
+
+
+
+1. Cliente.java
+Entidade – Representa a tabela cliente no banco de dados,
+ com atributos como nome, cpf, telefone, etc.
+
+2. ClienteRequest.java
+DTO (Data Transfer Object) – Usado para receber os dados enviados nas requisições HTTP 
+(ex: ao cadastrar ou editar um cliente).
+
+3. ClienteRepository.java
+Repositório (Interface) – Estende JpaRepository e permite executar operações no banco de dados,
+ como salvar, buscar, atualizar e deletar clientes.
+
+ 4. ClienteController.java
+Controller (Camada de API) – Expõe os endpoints REST (/api/cliente) e recebe as requisições HTTP.
+ Chama o service para processar as regras de negócio.
+
+ 5. ClienteService.java
+Service (Regra de Negócio) – Contém a lógica principal do sistema relacionada ao cliente, 
+como validações,
+salvar no banco, aplicar regras específicas, etc.
+
+📁 modelo
+Responsável pela lógica do domínio e acesso ao banco.
+
+Contém:
+
+Entidades (Cliente.java, Produto.java, etc.) → Representam tabelas do banco.
+
+Repositórios (ClienteRepository.java) → Interface para persistência de dados.
+
+Serviços (ClienteService.java) → Lógica de negócio da aplicação.
+📁 api
+Responsável pela comunicação com o mundo externo (ex: front-end ou outro sistema).
+
+Contém:
+
+Controllers (ClienteController.java) → Exposição de endpoints REST (GET, POST, etc).
+
+DTOs / Requests (ClienteRequest.java, ClienteResponse.java) → Objetos para entrada e saída de dados via API.
+
+Validadores ou formatos específicos da API, se necessário.
+
