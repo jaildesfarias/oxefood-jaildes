@@ -175,4 +175,5 @@ Anotações de validação padrão disponíveis na Bean Validation (JSR-380), qu
 - As mensagens de erro personalizadas (`message`) são opcionalmente usadas para fornecer feedback mais claro ao usuário.
 - Para usar essas anotações, você deve ter a dependência Bean Validation (javax.validation ou jakarta.validation) em seu projeto.
 
-Essas anotações ajudam a garantir que os dados sejam consistentes e válidos antes de serem processados ou armazenados em um banco de dados.
+Essas anotações ajudam a garantir que os dados sejam consistentes e válidos antes de serem
+ processados ou armazenados em um banco de dados.
