@@ -1,49 +1,52 @@
+package br.com.ifpe.oxefood.api.venda;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import br.com.ifpe.oxefood.modelo.venda.Venda;
+import br.com.ifpe.oxefood.modelo.venda.VendaService;
 
-package br.com.ifpe.oxefood.api.produto;
-import org.hibernate.validator.constraints.Length;
+@RestController
+@RequestMapping("/api/venda")
+@CrossOrigin
+public class VendaController {
+    @Autowired
+    private VendaService vendaService;
 
-import br.com.ifpe.oxefood.modelo.produto.Produto;
-import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class ProdutoRequest {
-    
-    private Long idCategoria;
-    
-    @NotBlank(message = "O Código é de preenchimento obrigatório")
-    private String codigo;
-    
-    @NotBlank(message = "O Título é de preenchimento obrigatório")
-    @Length(max = 100, message = "O título deverá ter no máximo {max} caracteres")
-    private String titulo;
-    
-    @NotBlank(message = "A Descrição do produto é de preenchimento obrigatório")
-    private String descricao;
-        
-    private Double valorUnitario;
-    
-    
-    private Integer tempoEntregaMinimo;
-    
-    
-    private Integer tempoEntregaMaximo;
-
-    public Produto build(){
-        
-        return Produto.builder()
-            .codigo(codigo)
-            .titulo(titulo)
-            .descricao(descricao)
-            .valorUnitario(valorUnitario)
-            .tempoEntregaMinimo(tempoEntregaMinimo)
-            .tempoEntregaMaximo(tempoEntregaMaximo)
-            .build();
+    @PostMapping
+        public ResponseEntity<Venda> save(@RequestBody VendaRequest request) {
+        Venda venda = vendaService.save(request.build());
+        return new ResponseEntity<Venda>(venda, HttpStatus.CREATED);
     }
+
+    @GetMapping
+        public List<Venda> listarTodos() {
+        return vendaService.listarTodos();
+    }
+
+    @GetMapping("/{id}")
+        public Venda obterPorID(@PathVariable Long id) {
+        return vendaService.obterPorID(id);
+    }
+
+    @PutMapping("/{id}")
+        public ResponseEntity<Venda> update(@PathVariable("id") Long id, @RequestBody VendaRequest request) {
+        vendaService.update(id, request.build());
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}")
+       public ResponseEntity<Void> delete(@PathVariable Long id) {
+       vendaService.delete(id);
+       return ResponseEntity.ok().build();
+   }
 }

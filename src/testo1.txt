@@ -1,0 +1,786 @@
+@Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+    http
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .csrf(c -> c.disable())
+        .authorizeHttpRequests(authorize -> authorize
+            // Login público
+            .requestMatchers(HttpMethod.POST, "/api/auth").permitAll()
+
+            // Criar Gerente: permitido para ADMIN e GERENTE
+            .requestMatchers(HttpMethod.POST, "/api/gerente").hasAnyRole("ADMIN", "GERENTE")
+
+            // Listar Gerentes: qualquer autenticado
+            .requestMatchers(HttpMethod.GET, "/api/gerente").authenticated()
+
+            // Buscar por ID: qualquer autenticado
+            .requestMatchers(HttpMethod.GET, "/api/gerente/{id}").authenticated()
+
+            // Atualizar gerente: apenas ADMIN
+            .requestMatchers(HttpMethod.PUT, "/api/gerente/{id}").hasRole("ADMIN")
+
+            // Excluir gerente: apenas ADMIN
+            .requestMatchers(HttpMethod.DELETE, "/api/gerente/{id}").hasRole("ADMIN")
+
+            // Qualquer outra rota exige autenticação
+            .anyRequest().authenticated()
+        )
+        .sessionManagement(session -> session
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        )
+        .authenticationProvider(authenticationProvider)
+        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+    return http.build();
+}
+✅ 1. Interface GerenteRepository
+Você vai usar Spring Data JPA. Basta criar um método com a anotação @Query para a busca personalizada:
+
+java
+Copiar
+Editar
+package br.com.seuprojeto.repositorio;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import br.com.seuprojeto.modelo.Gerente;
+
+public interface GerenteRepository extends JpaRepository<Gerente, Long> {
+
+    @Query("SELECT g FROM Gerente g WHERE LOWER(g.nome) LIKE LOWER(CONCAT('%', :nome, '%'))")
+    List<Gerente> filtrarPorNomeAproximado(String nome);
+
+}
+🔍 Explicação:
+LOWER(g.nome) LIKE LOWER(CONCAT('%', :nome, '%')) → permite busca sem case sensitive e parcial.
+
+Exemplo: se o nome for "mar", ele retorna "Marcos", "Maria", "Romarinho", etc.
+
+Não há ORDER BY, então os resultados não serão ordenados.
+✅ 2. Como chamar isso no seu GerenteService ou Controller:
+java
+Copiar
+Editar
+List<Gerente> lista = gerenteRepository.filtrarPorNomeAproximado("mar");
+
+@Query("SELECT g FROM Gerente g WHERE LOWER(g.nome) LIKE LOWER(CONCAT('%', :nome, '%')) 
+ORDER BY g.dataNascimento DESC")
+List<Gerente> filtrarPorNomeAproximadoOrdenadoDesc(String nome);
+LIKE LOWER(CONCAT('%', :nome, '%')): busca aproximada sem diferenciar maiúsculas/minúsculas.
+
+ORDER BY g.dataNascimento DESC: ordena da data mais recente para a mais antiga (mais novo primeiro).
+
+ex.:List<Gerente> gerentes = gerenteRepository.filtrarPorNomeAproximadoOrdenadoDesc("joão");
+
+public void enviarEmailAprovacaoFornecedor(Fornecedor fornecedor) {
+
+    String assuntoEmail = "Cadastro aprovado com sucesso";
+
+    Context params = new Context();
+    params.setVariable("nomeFornecedor", fornecedor.getNome());
+    params.setVariable("dataAtual", LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+    params.setVariable("valorTotal", fornecedor.getValorLimite()); // supondo que o Fornecedor tem esse campo
+
+    this.sendMailTemplate("aprova_fornecedor.html", fornecedor.getUsuario().getUsername(), assuntoEmail, params);
+}
+Optional<Fornecedor> optional = fornecedorRepository.findById(id);
+
+if (optional.isPresent()) {
+    enviarEmailAprovacaoFornecedor(optional.get());
+} else {
+    throw new EntidadeNaoEncontradaException("Fornecedor não encontrado com ID: " + id);
+}
+
+
+01) Considerando as classes abaixo:
+
+
+@Entity
+@Table(name = "Livro")
+@Builder
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class Livro {
+  
+   @Id
+   @GeneratedValue(strategy = GenerationType.SEQUENCE)
+   private Long id;
+
+
+   @Column
+   private String titulo;
+
+
+   @Column
+   private String autor;
+
+
+   @Column
+   private Double preco;
+
+
+}
+...
+
+
+@Entity
+@Table(name = "Biblioteca")
+@Builder
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class Biblioteca extends  Livro
+ {
+  
+   @Id
+   @GeneratedValue(strategy = GenerationType.SEQUENCE)
+   private Long id;
+
+
+   @Column
+   private String responsavel;
+
+
+}
+-------------------------------------------------------
+
+a) Implemente um relacionamento de 1 - n (um para muitos) bidirecional entre as classes Livro e Biblioteca (C18 - Back-end - Relacionando Entidades) de forma que:
+um livro tenha uma relação com biblioteca;
+uma Biblioteca tenha uma lista de livros;
+
+Copie o código das classes, cole no quadro abaixo e incremente o código de acordo com o solicitado pela questão:  (1,0 ponto)
+
+Resposta:
+
+@OneToMany(mappedBy = "livro", orphanRemoval = true, fetch = FetchType.EAGER)
+   private List<Biblioteca> biblioteca;
+
+---------------------------------------------------------
+
+b) Implemente as seguintes validações de banco de dados (Aula C20 - Validações no back-end):
+Os campos titulo e autor da classe Livro não podem ser nulos;
+O campo responsavel da classe Biblioteca não pode ser nulo;
+O campo titulo da classe Livro deve ser único no banco de dados;
+
+Copie o código das classes, cole no quadro abaixo e incremente o código de acordo com o solicitado pela questão:  (0,5 ponto)
+
+Resposta:
+
+@NotNull(message = "O titulo é de preenchimento obrigatório")
+ @Column(unique = true)
+private String titulo;
+@NotNull(message = "O Autor  é de preenchimento obrigatório")
+private String autor;
+
+ @Column
+@NotNull(message = "O responsavel  é de preenchimento obrigatório")
+   private String responsavel;
+
+--------------------------------------------------------------------------
+
+c) Implemente na interface abaixo as seguintes consultas (Aula C25 - Implementando filtros de pesquisa):
+Implemente uma consulta para filtrar todos os livros por autor. Esta consulta deve ignorar caracteres maiúsculos e minúsculos (caixa alta e caixa baixa). (0,5 ponto)
+Implemente uma consulta para filtrar todos os livros por titulo e autor. Esta consulta deve ser exata, ou seja, só irá retornar os livros se o usuário informar exatamente o titulo e o autor do livro. (0,5 ponto)
+
+Resposta:
+
+public interface LivroRepository extends JpaRepository<Livro, Long> {
+
+
+
+@Query(value = "SELECT l FROM livros l WHERE l.autor = :autor")
+   List<livro> consultarPorautor(String autor);
+
+
+@Query(value = "SELECT l FROM livros l WHERE l.autor = :autor")
+   List<livro> consultarPorautor(String autor);
+   
+}
+
+----------------------------------------------------------------------------------
+d) Considerando o método abaixo, modifique o código para permitir (Aula C22 - Back-end - Controle de Acesso - Parte 1):
+
+Acesso público a rota (endpoint) que altera um Livro em LivroController: (0,5 ponto)
+
+@Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+
+    http
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .csrf(c -> c.disable())
+        .authorizeHttpRequests(authorize -> authorize
+
+
+            .requestMatchers(HttpMethod.POST, "/api/livro").permitAll()
+              
+
+
+            .anyRequest().authenticated()
+
+
+        )
+        .sessionManagement((session) -> session
+        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        )            
+        .authenticationProvider(authenticationProvider)
+        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+
+    return http.build();
+}
+--------------------------------------------------------------------------------
+02) Considerando as classes abaixo:
+
+
+@Entity
+@Table(name = "Gerente")
+@Builder
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class Gerente {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private Long id;
+
+
+    @Column
+    private String nome;
+
+
+    @Column
+    private LocalDate dataNascimento;
+    
+}
+
+...
+
+
+@Entity
+@Table(name = "Departamento")
+@Builder
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class Departamento {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private Long id;
+
+
+    @Column
+    private Integer qtdFuncionarios;
+
+
+}
+
+------------------------------------------------------------------------
+a) Implemente um relacionamento de 1 - 1 (um para um) unidirecional entre as classes Gerente e Departamento (C18 - Back-end - Relacionando Entidades) de forma que:
+um departamento tenha um gerente;
+
+Copie o código das classes, cole no quadro abaixo e incremente o código de acordo com o solicitado pela questão:  (0,5 ponto)
+
+Resposta:
+
+@OneToOne
+@JoinColumn(name = "gerente_id", referencedColumnName = "id")
+private Gerente gerente;
+--------------------------------------------------------------------------
+
+b) Implemente no quadro abaixo a classe GerenteRequest com as seguintes validações na entrada das requisições
+ (Aula C20 - Validações no back-end) (0,5 ponto):
+O campo nome não pode ser nulo ou vazio;
+O campo nome não pode ter mais que 100 caracteres;
+O campo dataNascimento deve ser preenchido com uma data igual ou anterior a data de hoje;
+
+Resposta:
+
+ @Column
+@NotBlank(message = "O campo nome  não pode ser nulo ou vazio")
+@Length(max = 100, message = "O campo nome tem que ter entre {max} caracteres")
+
+
+    private String nome;
+
+ @Column
+@Past( message = “deve ser preenchido com uma data igual ou anterior a data de hoje”
+    private LocalDate dataNascimento;
+
+_____________________________________________________________________________
+
+c) Implemente nas interfaces abaixos as seguintes consultas (Aula C25 - Implementando filtros de pesquisa):
+Implemente uma consulta para filtrar todos os gerentes pelo nome. Retorne uma lista ordenada pela data de 
+nascimento do Gerente. Esta consulta deve ser aproximada, ou seja, caso o usuário informe só parte do nome 
+do gerente, este deverá ser retornado na consulta. (0,5 ponto)
+Implemente uma consulta para filtrar todos os departamentos que tiverem uma quantidade de funcionários maior que 60. (0,5 ponto)
+
+Resposta:
+
+// Repositório para Gerente
+public interface GerenteRepository extends JpaRepository<Gerente, Long> {
+
+    // Consulta por nome (aproximada) e ordenada por data de nascimento
+    @Query("SELECT g FROM Gerente g WHERE LOWER(g.nome) LIKE LOWER(CONCAT('%', :nome, '%')) ORDER BY g.dataNascimento")
+    List<Gerente> consultarPorNomeAproximado(@Param("nome") String nome);
+}
+
+// Repositório para Departamento
+public interface DepartamentoRepository extends JpaRepository<Departamento, Long> {
+
+    // Consulta para departamentos com mais de 60 funcionários
+    @Query("SELECT d FROM Departamento d WHERE d.qtdFuncionarios > 60")
+    List<Departamento> consultarDepartamentosComMaisDe60Funcionarios();
+}
+
+---------------------------------------------------------------------------------
+
+d) Considerando o método abaixo, modifique o código para permitir (Aula C22 - Back-end - Controle de Acesso - Parte 1):
+
+Que apenas usuários que tenham o perfil de acesso ADMIN possam acessar a rota (endpoint) que remove um Gerente em GerenteController: (1,0 ponto)
+
+@Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+
+    http
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .csrf(c -> c.disable())
+        .authorizeHttpRequests(authorize -> authorize
+
+
+        .requestMatchers(HttpMethod.POST, "/api/auth").permitAll()
+
+
+            .anyRequest().authenticated()
+
+
+        )
+        .sessionManagement((session) -> session
+        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        )            
+        .authenticationProvider(authenticationProvider)
+        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+
+    return http.build();
+}
+
+
+----------------------------------------------------------------------------------
+03) Conforme estudamos na aula “C21 - Exibindo mensagens no front-end”, explique qual componente utilizamos no
+ projeto do front-end para exibirmos as mensagens para os usuários? Como ele foi utilizado? Dê exemplos. (1,0 ponto)
+
+Resposta:
+
+Utiliazando a bibioteca  <ToastContainer /> , colocando no arquivo app.js e criamos e o diretorio
+ src/views/util,  e criamos um arquivo chamado  util.js onde fica armazenadas  as as menssagens onde podemos 
+ escolher a cor e  posicionar as menssagens exibidas em seguida é adiconar as modificações nos arquivos de 
+ cliente e entregador e produto.
+ 
+ ----------------------------------------------------------------------------------
+
+04) Na aula “C26 - Envio de e-mails com Templates Thymeleaf”, implementamos um método que foi chamado pelo save da classe ClienteService e que envia um email para o cliente após seu cadastro (código abaixo):
+
+public void enviarEmailConfirmacaoCadastroCliente(Cliente cliente) {
+
+    String assuntoEmail = "Bem vindo ao nosso aplicativo";
+
+    Context params = new Context();
+    params.setVariable("cliente", cliente);
+
+    this.sendMailTemplate("bem_vindo_cliente.html", cliente.getUsuario().getUsername(), assuntoEmail, params);
+}
+
+-----------------------------------------------------------------------------------
+Seguindo esta lógica, ao considerar o HTML abaixo do arquivo aprova_fornecedor.html: 
+
+...
+
+<table>
+   <tr>
+      <td>
+         <p>Prezado <span th:text="${nomeFornecedor} ?: ''"></span></p>
+	  <p>Seu cadastro foi aprovador no nosso sistema de análise</p>
+	  <p>A partir de <span th:text="${dataAtual} ?: ''">, você está autorizado a comprar em nossos sistemas um valor total de <span th:text="${valorTotal} ?: ''"> reais até o fim deste ano</p>
+      </td>
+   </tr>
+</table>
+
+
+Implemente o método abaixo para enviar email para o fornecedor, preenchendo os parâmetros necessários do arquivo aprova_fornecedor.html. (1,0 ponto)
+
+Resposta:
+
+public void enviarEmailAprovacaoFornecedor(Fornecedor fornecedor) {
+
+}
+----------------------------------------------------------------------------
+05) Conforme estudamos na aula “C30 - Documentando a API com Swagger”, explique qual biblioteca utilizamos no projeto do back-end para documentação da nossa API? Dê exemplos de como documentar uma rota em uma classe Controller. (1,0 ponto)
+
+Resposta:
+
+
+Springdoc , utilisando a dependecia do spring boot e as anotaçoes  de  @Tag(
+    name = "API Cliente",
+    description = "API responsável pelos servidos de cliente no sistema"
+)
+
+  @Operation(
+       summary = "Serviço responsável por salvar um cliente no sistema.",
+       description = "Exemplo de descrição de um endpoint responsável por inserir um cliente no sistema."
+   )
+desse jeito 
+
+-----------------------------------------------------------------------------
+
+06) Criamos na raiz do nosso projeto um arquivo chamado docker-compose.yml. Explique qual é a utilidade deste
+ arquivo em nosso projeto e porque ele precisa ser executado no servidor que estaremos fazendo deploy da aplicação (aula C31 - Implantando os Projetos no Servidor). (1,0 ponto)
+
+Resposta:
+
+A utilidade desse arquivo  são as configuracoes do nome do banco e senha que são esseciais para conectar
+ como banco de dados além de informar a porta do banco para ser feita a conexão 
+------------------------------------------------------------------------------
+
+07)O que é .env?
+.env significa "environment" (ambiente).
+
+É um arquivo onde você guarda senhas, URLs, chaves secretas e outras configurações fora do código.
+
+Evita expor informações ensíveis e facilita a troca de ambiente (desenvolvimento, produção etc).
+
+--------------------------------------------------------------------------------- 
+08) Implemente um relacionamento de 1 - N bidirecional entre as classes Categoria e Produto:
+
+Uma categoria pode conter vários produtos;
+
+Um produto pertence a uma única categoria.
+
+✅ Resposta:
+java
+Copiar código
+// Categoria.java
+@OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL, orphanRemoval = true)
+private List<Produto> produtos;
+
+// Produto.java
+@ManyToOne
+@JoinColumn(name = "categoria_id")
+private Categoria categoria;
+---------------------------------------------------------------------
+🔹 Pergunta b)
+Implemente as seguintes validações:
+
+O campo nome da classe Produto não pode ser nulo, vazio e deve ter no máximo 50 caracteres;
+
+O campo preco da classe Produto não pode ser negativo.
+
+✅ Resposta:
+java
+Copiar código
+@NotBlank(message = "O nome é de preenchimento obrigatório")
+@Length(max = 50, message = "O nome deve ter no máximo {max} caracteres")
+private String nome;
+
+@PositiveOrZero(message = "O preço não pode ser negativo")
+private Double preco;
+-----------------------------------------------------------------------
+🔹 Pergunta c)
+Implemente no repositório ProdutoRepository:
+
+Uma consulta que filtre produtos por parte do nome, sem considerar letras maiúsculas ou minúsculas. Ordene por preço.
+
+Uma consulta que retorne todos os produtos de uma categoria específica, recebendo o nome da categoria como parâmetro.
+
+✅ Resposta:
+java
+Copiar código
+@Query("SELECT p FROM Produto p WHERE LOWER(p.nome) LIKE LOWER(CONCAT('%', :nome, '%')) ORDER BY p.preco")
+List<Produto> buscarPorNome(@Param("nome") String nome);
+
+@Query("SELECT p FROM Produto p WHERE p.categoria.nome = :nomeCategoria")
+List<Produto> buscarPorCategoria(@Param("nomeCategoria") String nomeCategoria);
+------------------------------------------------------------------------
+✅ Exercício 2 – Relacionamento 1-1 e Segurança com Spring Security
+🔹 Pergunta a)
+Implemente um relacionamento de 1 - 1 bidirecional entre as classes Aluno e Carteirinha:
+
+Cada aluno possui uma carteirinha;
+
+A carteirinha pertence a um único aluno.
+
+✅ Resposta:
+java
+Copiar código
+// Aluno.java
+@OneToOne(mappedBy = "aluno", cascade = CascadeType.ALL)
+private Carteirinha carteirinha;
+
+// Carteirinha.java
+@OneToOne
+@JoinColumn(name = "aluno_id")
+private Aluno aluno;
+--------------------------------------------------------------------------------------
+🔹 Pergunta b)
+Implemente a classe AlunoRequest com as seguintes validações:
+
+O campo nome é obrigatório e deve conter no máximo 100 caracteres;
+
+O campo email deve estar em um formato válido.
+
+✅ Resposta:
+java
+Copiar código
+@NotBlank(message = "O nome é obrigatório")
+@Length(max = 100, message = "O nome deve ter no máximo {max} caracteres")
+private String nome;
+
+@Email(message = "Formato de e-mail inválido")
+private String email;
+-------------------------------------------------------------------------
+🔹 Pergunta c)
+Modifique o código do SecurityFilterChain para:
+
+Permitir acesso público à rota de cadastro de aluno (POST /api/aluno/cadastrar);
+
+Permitir apenas usuários com o perfil ADMIN acessarem a exclusão de alunos (DELETE /api/aluno/{id}).
+
+✅ Resposta:
+java
+Copiar código
+@Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http
+        .csrf(csrf -> csrf.disable())
+        .authorizeHttpRequests(auth -> auth
+            .requestMatchers(HttpMethod.POST, "/api/aluno/cadastrar").permitAll()
+            .requestMatchers(HttpMethod.DELETE, "/api/aluno/{id}").hasRole("ADMIN")
+            .anyRequest().authenticated()
+        )
+        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .authenticationProvider(authenticationProvider)
+        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+    return http.build();
+}
+--------------------------------------------------------------------------------
+✅ Exercício 3 – Consultas Personalizadas com @Query
+🔹 Pergunta a)
+Na interface AlunoRepository:
+
+Consulta que filtre alunos por nome (parcial e case insensitive), ordenados por data de nascimento;
+
+Consulta que retorne alunos com e-mail @ifpe.edu.br.
+
+✅ Resposta:
+java
+Copiar código
+@Query("SELECT a FROM Aluno a WHERE LOWER(a.nome) LIKE LOWER(CONCAT('%', :nome, '%')) ORDER BY a.dataNascimento")
+List<Aluno> buscarPorNome(@Param("nome") String nome);
+
+@Query("SELECT a FROM Aluno a WHERE a.email LIKE '%@ifpe.edu.br'")
+List<Aluno> buscarPorEmailIfpe();
+---------------------------------------------
+🔹 Pergunta b)
+Na interface CarteirinhaRepository:
+
+Consulta para carteirinhas emitidas após uma data;
+
+Consulta para carteirinha de aluno com nome exato.
+
+✅ Resposta:
+java
+Copiar código
+@Query("SELECT c FROM Carteirinha c WHERE c.dataEmissao > :data")
+List<Carteirinha> buscarPorDataEmissao(@Param("data") LocalDate data);
+
+@Query("SELECT c FROM Carteirinha c WHERE c.aluno.nome = :nome")
+Carteirinha buscarPorNomeAluno(@Param("nome") String nome);
+
+-------------------------------------------------------------------------
+✅ Exercício 4 – Envio de E-mail com Template Thymeleaf
+🔹 Pergunta a)
+Implemente o método enviarEmailBoasVindas(Aluno aluno) com os campos do template:
+
+nomeAluno, dataCadastro, matricula.
+
+Assunto do e-mail: "Bem-vindo(a) à nossa escola!"
+
+✅ Resposta:
+java
+Copiar código
+public void enviarEmailBoasVindas(Aluno aluno) {
+    String assuntoEmail = "Bem-vindo(a) à nossa escola!";
+
+    Context context = new Context();
+    context.setVariable("nomeAluno", aluno.getNome());
+    context.setVariable("dataCadastro", LocalDate.now());
+    context.setVariable("matricula", aluno.getMatricula());
+
+    sendMailTemplate("boas_vindas.html", aluno.getEmail(), assuntoEmail, context);
+}
+------------------------------------------------------------------------
+✅ Exercício 5 – Documentação com Swagger
+🔹 Pergunta a)
+Explique:
+
+Qual biblioteca usamos para Swagger?
+
+Como documentar um endpoint com @Tag e @Operation?
+
+✅ Resposta:
+Biblioteca usada: springdoc-openapi
+
+Exemplo:
+
+java
+Copiar código
+@Tag(name = "API Aluno", description = "Gerencia os alunos do sistema")
+@RestController
+@RequestMapping("/api/aluno")
+public class AlunoController {
+
+    @Operation(
+        summary = "Cadastrar novo aluno",
+        description = "Serviço responsável por cadastrar aluno no sistema"
+    )
+    @PostMapping("/cadastrar")
+    public ResponseEntity<Void> cadastrar(@RequestBody AlunoRequest request) {
+        // lógica
+    }
+}
+--------------------------------------------------------------------------
+✅ Exercício 6 – Arquivo docker-compose.yml
+🔹 Pergunta a)
+Explique:
+
+Para que serve o docker-compose.yml?
+
+Por que ele precisa estar no servidor?
+
+✅ Resposta:
+O docker-compose.yml permite configurar todos os containers necessários para a aplicação (ex: banco + back-end).
+
+No servidor, ele garante que a infraestrutura será criada e iniciada com um único comando (docker-compose up), facilitando o deploy.
+-----------------------------------------------------------------------------------------
+🔹 Pergunta b)
+Crie um arquivo docker-compose.yml com PostgreSQL e Spring Boot conectando ao banco.
+
+✅ Resposta:
+yaml
+Copiar código
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres_db
+    environment:
+      POSTGRES_DB: meu_banco
+      POSTGRES_USER: usuario
+      POSTGRES_PASSWORD: senha
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: spring_app
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/meu_banco
+      SPRING_DATASOURCE_USERNAME: usuario
+      SPRING_DATASOURCE_PASSWORD: senha
+    ports:
+      - "8080:8080"
+
+volumes:
+  postgres_data:
+
+  O Postman é uma ferramenta usada principalmente para testar APIs
+   (interfaces de programação de aplicações). Ele é muito útil para desenvolvedores 
+   ackend, frontend e testers que precisam interagir com APIs de forma prática
+
+   Principais funções do Postman:
+Testar requisições HTTP:
+
+Enviar requisições GET, POST, PUT, DELETE, entre outras, para um servidor.
+
+Ver o que a API responde (status, corpo da resposta, headers etc.).
+
+Simular o comportamento do seu sistema:
+
+Você pode testar manualmente o funcionamento de uma API antes mesmo de ter o front-end finalizado.
+
+Enviar dados no corpo da requisição:
+
+JSON, formulário, texto, arquivos etc.
+
+Útil, por exemplo, para cadastrar usuários ou autenticar com login e senha.
+
+Testar com autenticação:
+
+Suporta token JWT, Basic Auth, Bearer Token, entre outros tipos.
+
+Organizar coleções de testes:
+
+Você pode salvar várias requisições organizadas em coleções e ambientes (ex: desenvolvimento, produção).
+
+Automatizar testes:
+
+Com scripts, dá para criar testes automatizados para verificar se os endpoints estão funcionando corretamente.
+
+Gerar documentação automática:
+
+A partir de uma coleção de requisições, o Postman pode gerar documentação da API.
+
+🧠 Em resumo:
+O Postman serve para testar, depurar e documentar APIs de forma simples e eficiente, sem precisar programar um sistema inteiro só para isso.
+
+Se quiser, posso te mostrar um exemplo de requisição no Postman. Deseja?
+
+O Docker é uma plataforma que serve para criar, empacotar, distribuir e executar aplicações em ambientes isolados chamados de containers.
+
+✅ Para que serve o Docker?
+Empacotar aplicações com tudo que elas precisam
+
+O Docker coloca sua aplicação, bibliotecas, dependências e configurações em um "container", que é como uma mini-máquina virtual.
+
+Isso garante que ela vai rodar igual em qualquer lugar: no seu PC, no servidor ou na nuvem.
+
+Evitar problemas de "na minha máquina funciona"
+
+Como o container leva tudo que a aplicação precisa, não importa se o sistema operacional é diferente.
+
+Facilitar a instalação de ambientes
+
+Exemplo: você pode subir um banco de dados PostgreSQL com um único comando, sem precisar instalar nada no seu sistema operacional.
+
+Automatizar ambientes de desenvolvimento, teste e produção
+
+É muito usado para montar rapidamente ambientes padronizados para desenvolvedores ou para executar testes automáticos.
+
+Desempenho melhor que máquinas virtuais
+
+Containers são mais leves e rápidos que VMs porque compartilham o mesmo kernel do sistema operacional.
+
+Integração com DevOps e CI/CD
+
+Docker é amplamente usado em pipelines de integração e entrega contínua.
+
+🧠 Em resumo:
+O Docker serve para garantir que sua aplicação rode de forma previsível e isolada, em qualquer lugar, de forma leve, rápida e automatizável.
+
