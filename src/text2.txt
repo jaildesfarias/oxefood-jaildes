@@ -63,9 +63,6 @@ O relacionamento é unidirecional (Cliente conhece Endereço, mas Endereço não
 🔁 Relacionamento bidirecional (opcional)
 Se quiser que o Endereco também conheça o Cliente, adicione isso na classe Endereco:
 
-java
-Copiar
-Editar
 @OneToOne(mappedBy = "endereco")
 private Cliente cliente;
 E na classe Cliente, tudo permanece igual.
