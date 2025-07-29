@@ -1,0 +1,84 @@
+@Entity
+public class Livro {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String titulo;
+
+    @ManyToMany
+    @JoinTable(
+        name = "livro_autor",
+        joinColumns = @JoinColumn(name = "livro_id"),
+        inverseJoinColumns = @JoinColumn(name = "autor_id")
+    )
+    private List<Autor> autores = new ArrayList<>();
+
+    // Getters e Setters
+}
+@Entity
+public class Autor {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String nome;
+
+    @ManyToMany(mappedBy = "autores")
+    private List<Livro> livros = new ArrayList<>();
+
+    // Getters e Setters
+}
+@ManyToMany: define o relacionamento.
+
+@JoinTable: especifica a tabela intermediária (livro_autor) que será criada automaticamente.
+
+joinColumns: é a chave estrangeira que aponta para a entidade atual (Livro).
+
+inverseJoinColumns: é a chave estrangeira que aponta para a outra entidade (Autor).
+
+mappedBy: usado na outra ponta para indicar que o mapeamento é feito pela outra entidade.
+@Entity
+public class Endereco {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String rua;
+    private String cidade;
+    private String cep;
+
+    // Getters e Setters
+}
+@OneToOne: indica o relacionamento um-para-um.
+
+@JoinColumn: define a chave estrangeira que será usada na tabela Cliente (coluna endereco_id).
+
+cascade = CascadeType.ALL: garante que ao salvar o cliente, o endereço também será salvo automaticamente.
+
+O relacionamento é unidirecional (Cliente conhece Endereço, mas Endereço não conhece Cliente). 
+🔁 Relacionamento bidirecional (opcional)
+Se quiser que o Endereco também conheça o Cliente, adicione isso na classe Endereco:
+
+java
+Copiar
+Editar
+@OneToOne(mappedBy = "endereco")
+private Cliente cliente;
+E na classe Cliente, tudo permanece igual.
+
+✅ Exemplo de uso no Service
+
+Endereco endereco = new Endereco();
+endereco.setRua("Rua A");
+endereco.setCidade("Recife");
+endereco.setCep("12345-000");
+
+Cliente cliente = new Cliente();
+cliente.setNome("João");
+cliente.setEndereco(endereco);
+
+clienteRepository.save(cliente); // Endereço é salvo junto

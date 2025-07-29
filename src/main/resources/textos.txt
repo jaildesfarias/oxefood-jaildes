@@ -1,14 +1,4 @@
  
- 
- 
- Curso  Disciplina Turno 
-Informática para a Internet Desenvolvimento para Web III Noite 
-Professor Data Pontuação 
-Roberto Alencar 10/02/2025 10,0 pontos 
-Aluno 
-                                                           Matheus Rafael 
- 
- 
 01) Considerando as classes abaixo: 
  
 01 
@@ -129,7 +119,7 @@ private String responsavel;
 c) Implemente na interface abaixo as seguintes consultas (Aula C25 - Implementando filtros de 
 pesquisa): 
 ● Implemente uma consulta para filtrar todos os livros por autor. Esta consulta deve ignorar 
-caracteres maiúsculos e minúsculos (caixa alta e caixa baixa). (0,5 ponto) 
+caracteres maiúsculos e minúsculos (caixa alta e caixa baixa). 
 ● Implemente uma consulta para filtrar todos os livros por titulo e autor. Esta consulta deve ser 
 exata, ou seja, só irá retornar os livros se o usuário informar exatamente o titulo e o autor do 
 livro. (0,5 ponto) 
@@ -383,7 +373,8 @@ arquivos de cliente e entregador e produto.
  
  
 04) Na aula “C26 - Envio de e-mails com Templates Thymeleaf”, implementamos um 
-método que foi chamado pelo save da classe ClienteService e que envia um email para o cliente 
+método que foi chamado pelo save da classe ClienteService e que envia um email 
+para o cliente 
 após seu cadastro (código abaixo): 
  
 public void enviarEmailConfirmacaoCadastroCliente(Cliente cliente) { 
@@ -432,10 +423,51 @@ summary = "Serviço responsável por salvar um cliente no sistema.",
 description = "Exemplo de descrição de um endpoint responsável por inserir um cliente no sistema." 
 )
  desse jeito  
-06) Criamos na raiz do nosso projeto um arquivo chamado docker-compose.yml. Explique qual é a 
+06) Criamos na raiz do nosso projeto um arquivo chamado docker-compose.yml.
+ Explique qual é a 
 utilidade deste arquivo em nosso projeto e porque ele precisa ser executado no servidor que 
 estaremos fazendo deploy da aplicação (aula C31 - Implantando os Projetos no 
-Servidor). (1,0 ponto) 
+Servidor). 
 Resposta: 
 A utilidade dese arquivo  são as configuracoes do nome do banco e senha que são esseciais para 
-conectar como banco de dados além de informar a porta do banco para ser feita a conexão  
+conectar como banco de dados além de informar a porta do banco para ser feita a conexão  public interface LivroRepository extends JpaRepository<Livro, Long> {
+
+    // Consulta por autor (ignorando maiúsculas/minúsculas)
+    @Query("SELECT l FROM Livro l WHERE LOWER(l.autor) = LOWER(:autor)")
+    List<Livro> consultarPorAutor(String autor);
+
+    // Consulta exata por título e autor (case-sensitive)
+    @Query("SELECT l FROM Livro l WHERE l.titulo = :titulo AND l.autor = :autor")
+    List<Livro> consultarPorTituloEAutor(String titulo, String autor);
+}
+✅ Como usar no seu Service ou Controller
+Exemplo de uso no controller:
+
+java
+Copiar
+Editar
+@GetMapping("/livros/autor")
+public Page<Livro> buscarPorAutor(
+        @RequestParam String autor,
+        @RequestParam int page,
+        @RequestParam int size) {
+
+    Pageable pageable = PageRequest.of(page, size);
+    return livroRepository.consultarPorAutor(autor, pageable);
+}
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+public interface LivroRepository extends JpaRepository<Livro, Long> {
+
+    // Consulta por autor (ignorando maiúsculas/minúsculas), com paginação
+    @Query("SELECT l FROM Livro l WHERE LOWER(l.autor) = LOWER(:autor)")
+    Page<Livro> consultarPorAutor(@Param("autor") String autor, Pageable pageable);
+
+    // Consulta exata por título e autor, com paginação
+    @Query("SELECT l FROM Livro l WHERE l.titulo = :titulo AND l.autor = :autor")
+    Page<Livro> consultarPorTituloEAutor(@Param("titulo") String titulo, @Param("autor") String autor, Pageable pageable);
+}

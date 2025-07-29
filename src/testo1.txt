@@ -34,6 +34,40 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
 
     return http.build();
 }
+@Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+    http
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .csrf(csrf -> csrf.disable())
+        .authorizeHttpRequests(auth -> auth
+
+            // Login público
+            .requestMatchers(HttpMethod.POST, "/api/auth").permitAll()
+
+            // Criar Gerente: ADMIN ou GERENTE
+            .requestMatchers(HttpMethod.POST, "/api/gerente").hasAnyRole("ADMIN", "GERENTE")
+
+            // Listar e buscar gerentes: autenticado
+            .requestMatchers(HttpMethod.GET, "/api/gerente", "/api/gerente/{id}").authenticated()
+
+            // Atualizar/excluir gerente: ADMIN
+            .requestMatchers(HttpMethod.PUT, "/api/gerente/{id}").hasRole("ADMIN")
+            .requestMatchers(HttpMethod.DELETE, "/api/gerente/{id}").hasRole("ADMIN")
+
+            // Consultar livros: qualquer autenticado
+            .requestMatchers(HttpMethod.GET, "/api/livros").authenticated()
+
+            // Qualquer outra requisição: exige autenticação
+            .anyRequest().authenticated()
+        )
+        .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .authenticationProvider(authenticationProvider)
+        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+    return http.build();
+}
+
 ✅ 1. Interface GerenteRepository
 Você vai usar Spring Data JPA. Basta criar um método com a anotação @Query para a busca personalizada:
 
