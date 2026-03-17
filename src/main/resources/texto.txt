@@ -110,6 +110,337 @@ Ele garante que somente usuários autenticados possam acessar.
 Caso contrário, redireciona para login.
 
 O que é uma API WEB considerada RESTful? 
+Curso Disciplina Turno
+InformáticaparaInternet DesenvolvimentoparaWebIII Noite
+Professor Data Pontuação
+RobertoAlencar 28/11/2024 10,0pontos
+Aluno
+Venda
+(subclassede EntidadeAuditavel )
+Atributo/Coluna Tipo
+cliente String
+produto String
+statusVenda String
+dataVenda LocalDate
+valorTotal Double
+observacao String
+retiradaEmLoja Boolean
+Utilizandooprojetocriadoao longodadisciplina, crieumanovaentidadeparaatabela
+Vendaeimplementenoback-endefront-end:
+01)AfuncionalidadedeincluirumaVenda (implementarnoback-endenofront-end)(4,0
+pontos).
+Observaçõesparaateladeinclusão:
+● OcampostatusVenda deve ser implementado com um <Form.Select> e exibir
+as seguintes opções para o usuário:
+○ Pedido Cancelado
+○ Aguardando Pagamento
+○ Pago
+○ Entregue
+● Adicione uma máscara para o input do campo dataVenda
+● Ocampo retiradaEmLoja deve ser implementado com um <Form.Radio> e
+conter as opções sim e não;
+02) A funcionalidade de listar todas as Vendas armazenadas no banco (implementar no
+back-end e no front-end). Na tabela da listagem, não exibir o campo observacao, os
+outros podem ser exibidos normalmente. (4,0 pontos).
+03) A funcionalidade de remover Venda (implementar no back-end e no front-end) (1,0
+ponto).
+04) Implemente na tela de listagem um botão que ficará ao lado dos botões de alterar e
+remover, e que ao ser clicado, exibe o valor do campo observacao da venda em um
+Modal (implementar no front-end) 
+
+
+PARTE 1 — ENTIDADE VENDA (BACK-END)
+
+Como ela é subclasse de EntidadeAuditavel, fica assim:
+
+📌 Venda.java (Entity)
+
+@Entity
+public class Venda extends EntidadeAuditavel {
+
+    private String cliente;
+    private String produto;
+    private String statusVenda;
+    private LocalDate dataVenda;
+    private Double valorTotal;
+    private String observacao;
+    private Boolean retiradaEmLoja;
+
+    // GETTERS E SETTERS
+}
+Repository
+@Repository
+public interface VendaRepository extends JpaRepository<Venda, Long> {
+}
+Service
+
+@Service
+public class VendaService {
+
+    @Autowired
+    private VendaRepository vendaRepository;
+
+    public Venda salvar(Venda venda){
+        return vendaRepository.save(venda);
+    }
+
+    public List<Venda> listar(){
+        return vendaRepository.findAll();
+    }
+
+    public void remover(Long id){
+        vendaRepository.deleteById(id);
+    }
+}
+Controller
+@RestController
+@RequestMapping("/api/venda")
+@CrossOrigin("*")
+public class VendaController {
+
+    @Autowired
+    private VendaService vendaService;
+
+    @PostMapping
+    public Venda salvar(@RequestBody Venda venda){
+        return vendaService.salvar(venda);
+    }
+
+    @GetMapping
+    public List<Venda> listar(){
+        return vendaService.listar();
+    }
+
+    @DeleteMapping("/{id}")
+    public void remover(@PathVariable Long id){
+        vendaService.remover(id);
+    }
+}
+PARTE 2 — TELA DE CADASTRO VENDA (FRONT-END)
+FormVenda.jsx
+import React, { useState } from "react";
+import { Form, Button } from "semantic-ui-react";
+import axios from "axios";
+import InputMask from "react-input-mask";
+
+export default function FormVenda(){
+
+    const [venda, setVenda] = useState({
+        cliente: "",
+        produto: "",
+        statusVenda: "",
+        dataVenda: "",
+        valorTotal: "",
+        observacao: "",
+        retiradaEmLoja: true
+    });
+
+    function handleChange(e, {name, value}){
+        setVenda({...venda, [name]: value});
+    }
+
+    function salvar(){
+        axios.post("http://localhost:8080/api/venda", venda)
+        .then(() => alert("Venda cadastrada com sucesso"))
+        .catch(() => alert("Erro ao salvar"));
+    }
+
+    return(
+        <Form>
+
+            <Form.Input
+                label="Cliente"
+                name="cliente"
+                value={venda.cliente}
+                onChange={handleChange}
+            />
+
+            <Form.Input
+                label="Produto"
+                name="produto"
+                value={venda.produto}
+                onChange={handleChange}
+            />
+
+            <Form.Select
+                label="Status"
+                name="statusVenda"
+                options={[
+                    { key:1, text:'Pedido Cancelado', value:'Pedido Cancelado'},
+                    { key:2, text:'Aguardando Pagamento', value:'Aguardando Pagamento'},
+                    { key:3, text:'Pago', value:'Pago'},
+                    { key:4, text:'Entregue', value:'Entregue'}
+                ]}
+                onChange={handleChange}
+            />
+
+            <Form.Field>
+                <label>Data Venda</label>
+                <InputMask
+                    mask="99/99/9999"
+                    name="dataVenda"
+                    value={venda.dataVenda}
+                    onChange={(e)=> setVenda({...venda, dataVenda:e.target.value})}
+                />
+            </Form.Field>
+
+            <Form.Input
+                label="Valor Total"
+                name="valorTotal"
+                value={venda.valorTotal}
+                onChange={handleChange}
+            />
+
+            <Form.TextArea
+                label="Observação"
+                name="observacao"
+                value={venda.observacao}
+                onChange={handleChange}
+            />
+
+            <Form.Group>
+                <label>Retirada em Loja</label>
+
+                <Form.Radio
+                    label="Sim"
+                    name="retiradaEmLoja"
+                    value={true}
+                    checked={venda.retiradaEmLoja === true}
+                    onChange={()=> setVenda({...venda, retiradaEmLoja:true})}
+                />
+
+                <Form.Radio
+                    label="Não"
+                    name="retiradaEmLoja"
+                    value={false}
+                    checked={venda.retiradaEmLoja === false}
+                    onChange={()=> setVenda({...venda, retiradaEmLoja:false})}
+                />
+            </Form.Group>
+
+            <Button primary onClick={salvar}>
+                Salvar
+            </Button>
+
+        </Form>
+    );
+}
+PARTE 3 — LISTAR VENDAS
+ListVenda.jsx
+import React, {useEffect, useState} from "react";
+import axios from "axios";
+import { Table, Button, Modal } from "semantic-ui-react";
+
+export default function ListVenda(){
+
+    const [lista, setLista] = useState([]);
+    const [open, setOpen] = useState(false);
+    const [obs, setObs] = useState("");
+
+    useEffect(()=>{
+        carregar();
+    },[]);
+
+    function carregar(){
+        axios.get("http://localhost:8080/api/venda")
+        .then(response => setLista(response.data));
+    }
+
+    function remover(id){
+        axios.delete("http://localhost:8080/api/venda/"+id)
+        .then(()=> carregar());
+    }
+
+    function mostrarObs(texto){
+        setObs(texto);
+        setOpen(true);
+    }
+
+    return(
+        <>
+
+        <Table celled>
+            <Table.Header>
+                <Table.Row>
+                    <Table.HeaderCell>Cliente</Table.HeaderCell>
+                    <Table.HeaderCell>Produto</Table.HeaderCell>
+                    <Table.HeaderCell>Status</Table.HeaderCell>
+                    <Table.HeaderCell>Data</Table.HeaderCell>
+                    <Table.HeaderCell>Valor</Table.HeaderCell>
+                    <Table.HeaderCell>Retirada</Table.HeaderCell>
+                    <Table.HeaderCell>Ações</Table.HeaderCell>
+                </Table.Row>
+            </Table.Header>
+
+            <Table.Body>
+                {lista.map(v => (
+                    <Table.Row key={v.id}>
+                        <Table.Cell>{v.cliente}</Table.Cell>
+                        <Table.Cell>{v.produto}</Table.Cell>
+                        <Table.Cell>{v.statusVenda}</Table.Cell>
+                        <Table.Cell>{v.dataVenda}</Table.Cell>
+                        <Table.Cell>{v.valorTotal}</Table.Cell>
+                        <Table.Cell>{v.retiradaEmLoja ? "Sim" : "Não"}</Table.Cell>
+                        <Table.Cell>
+
+                            <Button color="red" onClick={()=> remover(v.id)}>
+                                Remover
+                            </Button>
+
+                            <Button color="blue" onClick={()=> mostrarObs(v.observacao)}>
+                                Observação
+                            </Button>
+
+                        </Table.Cell>
+                    </Table.Row>
+                ))}
+            </Table.Body>
+        </Table>
+
+        <Modal open={open} onClose={()=> setOpen(false)}>
+            <Modal.Header>Observação</Modal.Header>
+            <Modal.Content>
+                {obs}
+            </Modal.Content>
+            <Modal.Actions>
+                <Button onClick={()=> setOpen(false)}>Fechar</Button>
+            </Modal.Actions>
+        </Modal>
+
+        </>
+    );
+}
+TELA DE CADASTRO DE VENDA (COMO FICARIA)
+------------------------------------
+        CADASTRO DE VENDA
+------------------------------------
+
+Cliente:        [______________]
+
+Produto:        [______________]
+
+Status Venda:   [ Aguardando Pagamento  v ]
+
+Data Venda:     [ 10/03/2026 ]
+
+Valor Total:    [ 150.00 ]
+
+Observação:
+[__________________________________]
+[__________________________________]
+
+Retirada em Loja:
+
+(o) Sim     ( ) Não
+
+
+        [ SALVAR ]
+        Código Exemplo (FormVenda.jsx)
+        ----------------------------------------------------------
+Cliente | Produto | Status | Data | Valor | Retirada | Ações
+----------------------------------------------------------
+João    | Pizza   | Pago   |10/03 | 50.00 | Sim      | [Obs] [Remover]
+Maria   | Refri   | Entregue|09/03| 10.00 | Não      | [Obs] [Remover]
 
 Uma API RESTful é um serviço na web que disponibiliza informações ou funcionalidades através de 
 endereços (URLs). Ela utiliza os métodos padrão do protocolo HTTP para acessar e modificar esses
